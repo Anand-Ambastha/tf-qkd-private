@@ -1,0 +1,9 @@
+01_model_comparison exit 0 4s
+02_adaptive_alpha exit 0 205s
+03_distance_sweep_and_validation exit 0 18s
+04_max_range_and_validity exit 0 79s
+05_instantaneous_adaptive_all_graphs exit 0 72s
+ALLDONE
+RERUN 04_max_range_and_validity exit 0 95s
+RERUN 05_instantaneous_adaptive_all_graphs exit 0 85s
+RERUNDONE

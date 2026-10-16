@@ -1,0 +1,4 @@
+case,sigma_X2 (this test),skewness (this test),skewness (Appendix H)
+"L=60, Cn2=1e-17",0.051,0.697,0.7
+"L=160, Cn2=1e-17",0.307,2.01,2.0
+"L=140, Cn2=1e-16",2.403,41.4,41.0

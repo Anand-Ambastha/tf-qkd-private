@@ -1,0 +1,114 @@
+====================================================================================================
+GAMMA-GAMMA APPLIED INDEPENDENTLY ON EACH ARM -- MAX-RANGE VALIDATION vs LOG-NORMAL
+====================================================================================================
+lambda=1550 nm  alpha_atm=0.046/km  w0=0.05 m  Rx radius=0.15 m  alpha_ref=0.2  pd=1e-07  Nmax=4
+Max range = largest TOTAL Alice-Bob distance with ergodic SKR > 1e-09 bits/pulse (sweep limit 450 km, grid 150 pts + 14 bisections).
+Per-arm: arms of length L/2, eta_A_nom = eta_B_nom = sqrt(eta_nom(L)), independent fading, eta = eta_A*eta_B.
+Instantaneous-eta outage threshold at alpha_ref: eta_th = 7.564e-09 (81.21 dB).
+
+----------------------------------------------------------------------------------------------------
+WEAK  Cn2 = 1e-17 m^(-2/3)
+----------------------------------------------------------------------------------------------------
+  per-arm sigma_R^2 = 1  at total L =   208.80 km   (Log-Normal validity limit)
+  per-arm sigma_R^2 = 10 at total L =   733.13 km   (moderate -> strong boundary)
+
+  Model                              Max range [km]  Loss@max [dB]  sigma_R2/arm @max   note
+  Deterministic                              252.04          81.21                nan   
+  Gamma-Gamma (per arm)                      291.72          91.65               1.85   
+  Log-Normal (per arm)                       317.60          98.28               2.16   LN outside validity (sigma_R^2>1): indicative only
+  Gamma-Gamma (1 factor, legacy)             281.28          88.93               1.73   
+  Log-Normal (1 factor, legacy)              331.39         101.76               2.33   LN outside validity (sigma_R^2>1): indicative only
+
+  Gamma-Gamma - Log-Normal (per arm): -25.88 km (-8.1 % of LN range)
+  Gamma-Gamma - Deterministic       : +39.68 km
+
+----------------------------------------------------------------------------------------------------
+MODERATE  Cn2 = 1e-15 m^(-2/3)
+----------------------------------------------------------------------------------------------------
+  per-arm sigma_R^2 = 1  at total L =    16.94 km   (Log-Normal validity limit)
+  per-arm sigma_R^2 = 10 at total L =    59.47 km   (moderate -> strong boundary)
+
+  Model                              Max range [km]  Loss@max [dB]  sigma_R2/arm @max   note
+  Deterministic                              252.04          81.21                nan   
+  Gamma-Gamma (per arm)                      293.23          92.03                186   
+  Log-Normal (per arm)                       132.73          46.60               43.6   LN outside validity (sigma_R^2>1): indicative only
+  Gamma-Gamma (1 factor, legacy)             278.83          88.30                170   
+  Log-Normal (1 factor, legacy)              104.04          36.94               27.9   LN outside validity (sigma_R^2>1): indicative only
+
+  Gamma-Gamma - Log-Normal (per arm): +160.50 km (+120.9 % of LN range)
+  Gamma-Gamma - Deterministic       : +41.19 km
+
+----------------------------------------------------------------------------------------------------
+STRONG  Cn2 = 1e-13 m^(-2/3)
+----------------------------------------------------------------------------------------------------
+  per-arm sigma_R^2 = 1  at total L =     1.37 km   (Log-Normal validity limit)
+  per-arm sigma_R^2 = 10 at total L =     4.82 km   (moderate -> strong boundary)
+
+  Model                              Max range [km]  Loss@max [dB]  sigma_R2/arm @max   note
+  Deterministic                              252.04          81.21                nan   
+  Gamma-Gamma (per arm)                      291.72          91.65           1.85e+04   
+  Log-Normal (per arm)                        13.08           2.62               62.3   LN outside validity (sigma_R^2>1): indicative only
+  Gamma-Gamma (1 factor, legacy)             277.98          88.07           1.69e+04   
+  Log-Normal (1 factor, legacy)                9.81           1.96               36.7   LN outside validity (sigma_R^2>1): indicative only
+
+  Gamma-Gamma - Log-Normal (per arm): +278.64 km (+2130.1 % of LN range)
+  Gamma-Gamma - Deterministic       : +39.69 km
+
+====================================================================================================
+SUMMARY (max range, km)
+====================================================================================================
+Cn2 class   Deterministic   GG per arm   LN per arm   GG-LN [km]  GG 1-factor  LN 1-factor
+weak                252.0        291.7        317.6        -25.9        281.3        331.4
+moderate            252.0        293.2        132.7       +160.5        278.8        104.0
+strong              252.0        291.7         13.1       +278.6        278.0          9.8
+
+====================================================================================================
+GAMMA-GAMMA vs LOG-NORMAL AGREEMENT INSIDE THE LOG-NORMAL VALIDITY RANGE (arm sigma_R^2 <= 1)
+====================================================================================================
+Cn2 class   valid up to L [km]  grid pts    max |R_LN-R_GG|/R_GG    median
+weak                    208.80        69                  11.04%     0.78%
+moderate                 16.94         6                  15.43%     2.88%
+strong                    1.37         1                   7.08%     7.08%
+
+Very weak reference (Cn2 = 1e-18, both models valid at every distance shown):
+    L [km]  sigma_R2/arm         R_GG         R_LN  |diff|/R_GG
+      20.0       0.00136   2.3591e-02   2.3590e-02        0.00%
+      60.0        0.0102   2.7172e-03   2.7172e-03        0.00%
+     120.0        0.0362   1.8094e-04   1.8093e-04        0.01%
+
+====================================================================================================
+MONTE CARLO CROSS-CHECK AT THE REPORTED MAX-RANGE POINTS
+====================================================================================================
+Cn2       Model                    L_max [km]       R quad         R MC    MC s.e.   (MC-q)/q    |z|
+weak      Gamma-Gamma (per arm)        291.72    1.000e-09    1.008e-09   1.64e-11     +0.75%   0.46
+weak      Log-Normal (per arm)         317.60    1.000e-09    1.018e-09   3.07e-11     +1.82%   0.59
+moderate  Gamma-Gamma (per arm)        293.23    1.000e-09    1.018e-09   1.60e-11     +1.83%   1.14
+moderate  Log-Normal (per arm)         132.73    1.000e-09    7.192e-10   1.87e-10    -28.08%   1.50
+strong    Gamma-Gamma (per arm)        291.72    1.000e-09    1.026e-09   1.53e-11     +2.64%   1.73
+strong    Log-Normal (per arm)          13.08    9.998e-10    5.412e-10   1.99e-10    -45.88%   2.30
+
+(MC uses 2,000,000 independent (eta_A, eta_B) draws. At the outage threshold the rate is carried by
+ rare upward fades, so MC s.e. is a few % there. Log-Normal rows with arm sigma_R^2 >> 1 can show
+ large quad-vs-MC gaps: with sigma_X^2 = sigma_R^2 >> 1 the mean-one log-normal puts almost all
+ probability in deep fades and the mean is carried by astronomically rare events that NEITHER
+ 128-node Gauss-Hermite NOR 10^6 samples resolve -> those LN numbers are unconverged, and the
+ model is outside its validity anyway.)
+
+====================================================================================================
+INTERPRETATION
+====================================================================================================
+* Inside its validity range (arm sigma_R^2 <= 1) Log-Normal and Gamma-Gamma agree well (median 1-7 %, worst 7-15 % near the sigma_R^2=1 edge; table
+  above); they separate only once the arm Rytov variance passes ~1, which for the WEAK class is
+  beyond ~200 km total distance, for MODERATE ~17 km, for STRONG ~1.4 km.
+* Every class's max range lies beyond its own Log-Normal validity limit, so the Log-Normal
+  max-range number is a comparison/diagnostic, not a recommendation.
+* Gamma-Gamma saturates (SI -> ~1, independent of Cn2) while a forced Log-Normal keeps
+  SI = exp(sigma_R^2)-1 -> huge. That is why per-arm Gamma-Gamma gives nearly the SAME max range
+  for all three classes (once arms are saturated the fading statistics stop depending on Cn2),
+  while Log-Normal collapses for moderate/strong.
+* Fading lengthens the max range by ~40 km relative to the deterministic cutoff: R(eta) is
+  convex near the cutoff, so occasional upward fades lift the ergodic average (Jensen).
+* Not modelled (document in the write-up): turbulence-induced beam broadening / beam wander at
+  large Cn2 and arm amplitude imbalance (visibility penalty); Gamma-Gamma here uses the
+  plane-wave alpha/beta of Andrews & Phillips. Results are an upper bound for strong Cn2.
+====================================================================================================

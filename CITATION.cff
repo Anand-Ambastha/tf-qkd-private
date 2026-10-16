@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below, and cite the underlying physics papers listed in the README."
+title: "TFQKD_MultiTurbulence: Twin-Field QKD over free-space channels with multiple turbulence models"
+version: 2.4.0
+license: MIT
+type: software
+authors:
+  - family-names: "Kumar"
+    given-names: "Anand"
+    affiliation: "Centre for Applied Research in Electronics (CARE), Indian Institute of Technology Delhi, New Delhi, India"
+abstract: >-
+  Python framework for twin-field quantum key distribution over free-space optical links, with
+  Log-Normal, Gamma-Gamma, corrected Gamma-Gamma and beam-broadening turbulence models applied
+  independently on each arm. Developed by Anand Kumar during a research internship at CARE, IIT Delhi (June to December 2026), under the supervision of Dr. Neelkanth Kundu,
+  with Dr. Ramniwas Meena as co-supervisor. Supported by the National Quantum Mission (NQM) and the
+  Samngya Foundation.
+keywords:
+  - quantum key distribution
+  - twin-field QKD
+  - free-space optics
+  - atmospheric turbulence
+  - Gamma-Gamma

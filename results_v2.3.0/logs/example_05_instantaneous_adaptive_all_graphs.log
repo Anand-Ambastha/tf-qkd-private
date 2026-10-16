@@ -1,0 +1,61 @@
+Building global alpha*(eta) lookup table (200 bins, one-time cost)...
+  done. alpha* ranges from 0.0010 to 0.2999 across eta in [1e-16, 1e+00]
+
+Computing deterministic curve (Graph 5, instantaneous adaptive alpha)...
+Sweeping model='lognormal' at Cn2 class 'weak' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='lognormal' at Cn2 class 'moderate' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='lognormal' at Cn2 class 'strong' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='gamma_gamma' at Cn2 class 'weak' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='gamma_gamma' at Cn2 class 'moderate' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='gamma_gamma' at Cn2 class 'strong' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='corrected' at Cn2 class 'weak' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='corrected' at Cn2 class 'moderate' (120 distances, instantaneous adaptive alpha)...
+Sweeping model='corrected' at Cn2 class 'strong' (120 distances, instantaneous adaptive alpha)...
+
+All sweeps complete.
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph1_lognormal.png (+ .pdf)
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph2_gamma_gamma.png (+ .pdf)
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph3_corrected_gamma_gamma.png (+ .pdf)
+
+Building Graph 4 (AUTO, stitched from Graphs 1-3 at matching Cn2)...
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph4_auto.png (+ .pdf)
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph5_deterministic.png (+ .pdf)
+
+Building Graph 6 (Adaptive validity-regime switching)...
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph6_adaptive_validity_switch.png (+ .pdf)
+
+Building Graph 6 (Adaptive Cn² + Adaptive Model)...
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph7_adaptive_cn2.png
+Saved /home/claude/TFQKD_MultiTurbulence/examples/../figures/example05_graph8_adaptive_cn2.png
+
+================================================================================================
+INSTANTANEOUS-ADAPTIVE-ALPHA MAX-RANGE SUMMARY (all 5 graphs)
+================================================================================================
+alpha optimized per-realization via a 200-bin log-eta lookup table (see module docstring for why key_rate cannot be vectorized over alpha directly).
+Distance convention: TOTAL Alice-Bob distance. Outage threshold: 1e-09 bits/pulse.
+
+Graph 1: Log-Normal
+  weak       max range = 319.43 km, loss =  98.74 dB
+  moderate   max range = 124.71 km, loss =  43.98 dB
+  strong     max range =  10.57 km, loss =   2.11 dB
+
+Graph 2: Gamma-Gamma
+  weak       max range = 292.57 km, loss =  91.86 dB
+  moderate   max range = 292.57 km, loss =  91.86 dB
+  strong     max range = 292.57 km, loss =  91.86 dB
+
+Graph 3: Gamma-Gamma Extended (Corrected)
+  weak       max range = 292.57 km, loss =  91.86 dB
+  moderate   max range = 292.57 km, loss =  91.86 dB
+  strong     max range = 289.21 km, loss =  91.00 dB
+
+Graph 4: AUTO mode
+  weak       max range = 292.57 km, loss =  91.86 dB
+  moderate   max range = 292.57 km, loss =  91.86 dB
+  strong     max range = 289.21 km, loss =  91.00 dB
+
+Graph 5: Deterministic
+  max range = 252.29 km, loss =  81.28 dB
+================================================================================================
+
+Report saved to /home/claude/TFQKD_MultiTurbulence/examples/../docs/INSTANTANEOUS_ADAPTIVE_ALL_GRAPHS_REPORT.txt

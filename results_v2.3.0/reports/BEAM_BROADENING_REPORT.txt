@@ -1,0 +1,65 @@
+====================================================================================================
+GAMMA-GAMMA + TURBULENCE-INDUCED BEAM BROADENING (per arm) -- MAX RANGE
+====================================================================================================
+lambda=1550 nm  alpha_atm=0.046/km  w0=0.05 m  Rx radius=0.15 m  alpha_ref=0.2  pd=1e-07
+Max range = largest TOTAL distance with ergodic SKR > 1e-09 bits/pulse (log grid 110 pts, 14 bisections, limit 450 km).
+BB model: W_LT^2 = W^2 (1 + 1.63 sigma_R^(12/5) Lambda), Lambda = 2z/(k W^2), z = L/2 per arm;
+          eta_arm_nominal *= [1-exp(-2a^2/W_LT^2)] / [1-exp(-2a^2/W^2)]; Gamma-Gamma fading unchanged.
+
+----------------------------------------------------------------------------------------------------
+WEAK  Cn2 = 1e-17
+----------------------------------------------------------------------------------------------------
+  Model                           Max range [km]   Nominal loss @max [dB]   BB loss @max [dB]
+  Deterministic                           252.04                    81.21                0.00
+  Deterministic + BB                      249.06                    80.42                0.80
+  Gamma-Gamma (per arm)                   291.72                    91.65                0.00
+  Gamma-Gamma + BB (per arm)              287.94                    90.67                0.94
+
+  Beam-broadening effect on Gamma-Gamma range: -3.78 km (-1.3 %)
+
+----------------------------------------------------------------------------------------------------
+MODERATE  Cn2 = 1e-15
+----------------------------------------------------------------------------------------------------
+  Model                           Max range [km]   Nominal loss @max [dB]   BB loss @max [dB]
+  Deterministic                           252.04                    81.21                0.00
+  Deterministic + BB                      167.19                    57.31               23.90
+  Gamma-Gamma (per arm)                   293.23                    92.03                0.00
+  Gamma-Gamma + BB (per arm)              198.61                    66.48               25.68
+
+  Beam-broadening effect on Gamma-Gamma range: -94.62 km (-32.3 %)
+
+----------------------------------------------------------------------------------------------------
+STRONG  Cn2 = 1e-13
+----------------------------------------------------------------------------------------------------
+  Model                           Max range [km]   Nominal loss @max [dB]   BB loss @max [dB]
+  Deterministic                           252.04                    81.21                0.00
+  Deterministic + BB                       63.79                    21.67               59.55
+  Gamma-Gamma (per arm)                   291.72                    91.65                0.00
+  Gamma-Gamma + BB (per arm)               81.89                    28.84               62.93
+
+  Beam-broadening effect on Gamma-Gamma range: -209.84 km (-71.9 %)
+
+====================================================================================================
+SUMMARY (max range, km)
+====================================================================================================
+Cn2 class   Deterministic   Det + BB   GG per arm    GG + BB   BB effect on GG
+weak                252.0      249.1        291.7      287.9           -3.8 km
+moderate            252.0      167.2        293.2      198.6          -94.6 km
+strong              252.0       63.8        291.7       81.9         -209.8 km
+
+====================================================================================================
+VALIDATION OF 'gamma_gamma_bb' AT ITS MAX-RANGE POINT
+====================================================================================================
+Cn2          L_max   quad n=200       n=400       n=800          MC   MC s.e.  (MC-q800)/q800   W [m]  W_LT [m]  f_bb/arm
+weak        287.94    9.951e-10   9.999e-10   1.001e-09   1.017e-09   1.6e-11          +1.54%    1.42      1.50     0.897
+moderate    198.61    9.966e-10   1.000e-09   1.001e-09   1.028e-09   1.6e-11          +2.72%    0.98      4.35     0.052
+strong       81.89    9.974e-10   1.000e-09   1.001e-09   1.018e-09   1.5e-11          +1.77%    0.41     16.28  0.000714
+
+Notes:
+* BB depends only on the arm Rytov variance; it is a nominal-loss term, so it is NOT bounded by the
+  fading saturation that made plain Gamma-Gamma range nearly Cn2-independent. With BB, range now
+  falls with Cn2.
+* Long-term beam includes beam wander: do not add extra wander jitter on top (double counting).
+* Assumes horizontal path, constant Cn2, collimated Gaussian beam; Gamma-Gamma alpha/beta are the
+  plane-wave values (first-order correction). Arm amplitude-imbalance visibility penalty not modelled.
+====================================================================================================

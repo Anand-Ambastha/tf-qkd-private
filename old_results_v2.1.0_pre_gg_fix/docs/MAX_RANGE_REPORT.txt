@@ -1,0 +1,88 @@
+================================================================================================
+MAX-RANGE / REGIME-VALIDITY ANALYSIS -- weak / moderate / strong Cn2 classes
+================================================================================================
+Fixed: wavelength=1550 nm, alpha_atm=0.046/km (~0.20 dB/km), w0=0.05 m, receiver radius=0.15 m, alpha_ref=0.2, outage threshold=1e-09 bits/pulse
+Distance convention: TOTAL Alice-Bob distance (arm-aware internally).
+Cn2 classes (legacy_baseline.Cn2_classes): weak=1.0e-17, moderate=1.0e-15, strong=1.0e-13
+
+------------------------------------------------------------------------------------------------
+Cn2 class: WEAK  (Cn2 = 1.0e-17 m^(-2/3))
+------------------------------------------------------------------------------------------------
+  sigma_R^2=1  (log-normal validity limit) at L=208.80 km (loss=69.37 dB)
+
+  Model                             Max range (km)    Loss @ max (dB)   eta_nom @ max   
+  Deterministic                     251.48            81.06             7.830e-09       
+  Log-Normal (forced)               300.00            93.78             4.189e-10       
+  Gamma-Gamma (forced)              283.27            89.45             1.135e-09       
+  Corrected Gamma-Gamma (forced)    281.59            89.02             1.254e-09       
+  AUTO                              283.27            89.45             1.135e-09       
+
+  AUTO-mode model selection along this sweep:
+    L =   0.50 km  ->  AUTO selects 'two_link_lognormal'
+    L = 209.65 km  ->  AUTO selects 'two_link_gamma_gamma'
+
+------------------------------------------------------------------------------------------------
+Cn2 class: MODERATE  (Cn2 = 1.0e-15 m^(-2/3))
+------------------------------------------------------------------------------------------------
+  sigma_R^2=1  (log-normal validity limit) at L=16.93 km (loss=3.46 dB)
+  sigma_R^2=10 (moderate/strong boundary)   at L=59.46 km (loss=19.87 dB)
+
+  Model                             Max range (km)    Loss @ max (dB)   eta_nom @ max   
+  Deterministic                     251.48            81.06             7.830e-09       
+  Log-Normal (forced)               124.32            43.85             4.123e-05       
+  Gamma-Gamma (forced)              253.15            81.51             7.063e-09       
+  Corrected Gamma-Gamma (forced)    253.15            81.51             7.063e-09       
+  AUTO                              253.15            81.51             7.063e-09       
+
+  AUTO-mode model selection along this sweep:
+    L =   0.50 km  ->  AUTO selects 'two_link_lognormal'
+    L =  17.23 km  ->  AUTO selects 'two_link_gamma_gamma'
+    L =  60.73 km  ->  AUTO selects 'two_link_gamma_gamma_corrected'
+
+------------------------------------------------------------------------------------------------
+Cn2 class: STRONG  (Cn2 = 1.0e-13 m^(-2/3))
+------------------------------------------------------------------------------------------------
+  sigma_R^2=1  (log-normal validity limit) at L=1.15 km (loss=0.23 dB)
+  sigma_R^2=10 (moderate/strong boundary)   at L=4.76 km (loss=0.95 dB)
+
+  Model                             Max range (km)    Loss @ max (dB)   eta_nom @ max   
+  Deterministic                     251.48            81.06             7.830e-09       
+  Log-Normal (forced)               10.54             2.11              6.156e-01       
+  Gamma-Gamma (forced)              30.62             7.73              1.688e-01       
+  Corrected Gamma-Gamma (forced)    251.48            81.06             7.830e-09       
+  AUTO                              251.48            81.06             7.830e-09       
+
+  AUTO-mode model selection along this sweep:
+    L =   0.50 km  ->  AUTO selects 'two_link_lognormal'
+    L =   2.17 km  ->  AUTO selects 'two_link_gamma_gamma'
+    L =   5.52 km  ->  AUTO selects 'two_link_gamma_gamma_corrected'
+
+================================================================================================
+CROSS-CLASS SUMMARY: AUTO-mode max range vs. site turbulence condition
+================================================================================================
+Cn2 class     Max range (km)    Loss @ max (dB)   
+weak          283.27            89.45             
+moderate      253.15            81.51             
+strong        251.48            81.06             
+
+Interpretation:
+- 'forced' rows show what each single model reports even past its own validity
+  boundary for that Cn2 -- included to show how much a misapplied model over/
+  understates range, not as a recommended operating mode.
+- AUTO is the physically appropriate estimate at every distance for a given site's
+  Cn2, switching models at the regime boundaries listed above.
+- Note that turbulence-aware models can show a LONGER max range than the
+  deterministic-only prediction (e.g. weak Cn2: 84-86 km turbulent vs. 79.45 km
+  deterministic). This is not an error: the deterministic key-rate formula has a
+  hard cutoff (R=0 exactly below a critical transmittance), but under fading the
+  occasional upward excursion above that threshold still contributes positively to
+  the ergodic average even when the MEAN transmittance has already fallen below
+  the deterministic cutoff -- so fading can rescue a small amount of extra range
+  right at the edge of outage, on top of the (usually dominant) ergodic-rate
+  PENALTY it imposes at shorter, non-marginal distances.
+- Conversely, a model applied outside its own validity regime can UNDERSTATE range
+  (e.g. moderate Cn2: log-normal forced past sigma_R^2=1 gives 72.73 km vs. the
+  correctly-applicable Gamma-Gamma/corrected/AUTO value of 79.45 km) -- log-normal's
+  known underestimate of tail heaviness outside its weak-turbulence regime cuts
+  both ways depending on which tail matters for the quantity being computed.
+================================================================================================

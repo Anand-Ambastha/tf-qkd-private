@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tfqkd-multiturbulence"
+version = "2.4.0"
+description = "Twin-Field QKD over free-space optical channels with Log-Normal, Gamma-Gamma, corrected Gamma-Gamma and beam-broadening turbulence models, applied independently on each arm."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Anand Kumar" }]
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.24", "scipy>=1.10", "matplotlib>=3.7", "mpmath>=1.3"]
+keywords = ["quantum key distribution", "twin-field QKD", "free-space optics", "atmospheric turbulence", "Gamma-Gamma"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[tool.setuptools]
+packages = ["src", "src.turbulence"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

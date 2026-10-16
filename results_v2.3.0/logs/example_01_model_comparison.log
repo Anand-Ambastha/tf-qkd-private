@@ -1,0 +1,23 @@
+======================================================================
+Model 1: Deterministic FSO channel (no turbulence)
+======================================================================
+eta_nominal = 3.6788e-01
+R(alpha=0.20) = 2.313928e-02 bits/pulse
+
+======================================================================
+Model 2/3/4 comparison at matched eta_nominal, increasing turbulence
+======================================================================
+
+weak (Cn2=1e-17, L=3 km): per-arm sigma_R^2=0.000 -> regime='weak' -> AUTO picked 'two_link_lognormal'
+  mean(eta)=5.0000e-02  scintillation_index=0.0008
+  ergodic SKR = 6.735092e-03 bits/pulse
+
+moderate (Cn2=3e-15, L=6 km): per-arm sigma_R^2=0.448 -> regime='weak' -> AUTO picked 'two_link_lognormal'
+  mean(eta)=5.0000e-02  scintillation_index=1.4479
+  ergodic SKR = 6.105956e-03 bits/pulse
+
+strong (Cn2=1e-14, L=10 km): per-arm sigma_R^2=3.806 -> regime='moderate' -> AUTO picked 'two_link_gamma_gamma'
+  mean(eta)=5.0000e-02  scintillation_index=3.6714
+  ergodic SKR = 5.410775e-03 bits/pulse
+
+Figure saved to figures/example01_model_comparison_pdf.{png,pdf}

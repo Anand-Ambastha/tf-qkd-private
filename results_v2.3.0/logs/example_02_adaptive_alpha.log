@@ -1,0 +1,8 @@
+Channel: gamma_gamma, sigma_R^2=1.595, alpha=4.028, beta=1.914
+
+1) Fixed alpha=0.20 (legacy default):        ergodic SKR = 6.214284e-03
+2) Ergodically-optimized fixed alpha=0.2156: ergodic SKR = 6.304697e-03 (+1.45% vs legacy fixed)
+3) Instantaneous adaptive alpha:               mean SKR = 6.313949e-03 (+1.60% vs legacy fixed)
+
+Corr(alpha*, eta): Pearson r=0.978, Spearman rho=1.000
+Availability: adaptive=100.000%  fixed=100.000%
