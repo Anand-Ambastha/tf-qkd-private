@@ -1,0 +1,10 @@
+Running distance sweep (this evaluates the validated key-rate formula at every distance x model combination)...
+Figure saved to figures/example03_distance_sweep.{png,pdf}
+
+==============================================================================
+Validation report (see docs/VALIDATION.md for the full methodology)
+==============================================================================
+model                   pdf_integral  cdf_endpoint  mean_ok   skr_rel_err(mc,quad)
+lognormal               0.99943       0.99943       True      0.0004    
+gamma_gamma             0.99986       0.99986       True      0.0006    
+gamma_gamma_corrected   0.99995       1.00000       True      0.0011    

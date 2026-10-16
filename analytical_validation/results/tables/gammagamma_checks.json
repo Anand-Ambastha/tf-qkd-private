@@ -1,0 +1,362 @@
+[
+ {
+  "id": "G0-cumulants",
+  "description": "Polygamma cumulants of ln Gamma(k,k) vs direct numerical integration (k = 2..30, orders 1-4)",
+  "value": 2.8964031046937317e-13,
+  "limit": 1e-05,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": "limited by 4th-moment cancellation in the numerical reference at large k"
+ },
+ {
+  "id": "G1-reduction",
+  "description": "Cumulant formula with kappa_3 = kappa_4 = 0 equals the log-normal formula (2nd and 4th order)",
+  "value": 0.0,
+  "limit": 1e-12,
+  "mode": "<=",
+  "unit": "max rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-d2",
+  "description": "Aperture parameter d^2 = k D^2 / 4L at L=80 km, D=0.30 m (printed 1.14)",
+  "value": 9.410815758625901e-05,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-fig2-point-report-convention",
+  "description": "Report Fig. 2: point-receiver SI peak 0.71 (reproduced with variance^(12/5) convention)",
+  "value": 0.0019278077237686597,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-fig2-aperture-report-convention",
+  "description": "Report Fig. 2: aperture-averaged SI peak 0.44 (same convention)",
+  "value": 0.00040109469286997435,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-fig2-peak-position",
+  "description": "Report Fig. 2: SI peak at Rytov variance ~1 (same convention)",
+  "value": 0.06360902255639089,
+  "limit": 0.25,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-fig2-decay-report",
+  "description": "Report convention: SI at Rytov variance 10 falls to ~0.08 (point receiver)",
+  "value": 0.001042587455481872,
+  "limit": 0.02,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-correct-saturation",
+  "description": "Correct exponent sigma_R^(12/5): SI(10) lies in [1.1, 1.35] (saturation toward 1)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-correct-vs-report-at-10",
+  "description": "SI at Rytov variance 10: correct / report convention (point receiver)",
+  "value": 15.744152756021505,
+  "limit": 5.0,
+  "mode": ">=",
+  "unit": "ratio",
+  "status": "PASS",
+  "note": "correct 1.243 vs report convention 0.079"
+ },
+ {
+  "id": "G2-aperture-lowers",
+  "description": "Aperture lowers SI at every turbulence strength (correct convention)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-exponent-finding",
+  "description": "Gamma-Gamma exponent in the progress report",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "The report's Fig. 2 (peak 0.71 then decay to ~0.08 at Rytov variance 10) is reproduced only when sigma_R^(12/5) is evaluated as (Rytov variance)^(12/5). In the Andrews-Phillips formulas sigma_R is the Rytov STANDARD DEVIATION, i.e. the exponent is 6/5 on the variance; with it the scintillation index peaks at ~1.2-1.3 near variance 5-10 and saturates toward 1 (aperture-averaged curve scales down accordingly). The same slip was present in the repository's Gamma-Gamma code until v2.2.0. The cumulant formulas themselves are unaffected and are tested below under BOTH conventions."
+ },
+ {
+  "id": "G2-SI-vs-MC",
+  "description": "SI = 1/a + 1/b + 1/(ab) vs Monte Carlo variance of I (sigma_R^2 = 0.6)",
+  "value": 0.0026926003125602362,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G2-kappa3",
+  "description": "Fig. 1 label \"kappa_3 = -0.19\" at sigma_R^2 = 0.6",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "kappa_3 = -0.191 (point) / -0.094 (aperture) with the report convention; -0.132 / -0.057 with the correct exponent. Either way kappa_3 < 0: left-skewed log-domain distribution."
+ },
+ {
+  "id": "G3-4th-order-correct",
+  "description": "Claim: 4th-order GG formula within ~0.02 % of quadrature in all Table-1 rows (correct exponent)",
+  "value": 0.022539358082639495,
+  "limit": 0.03,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-ordering-correct",
+  "description": "Error shrinks with order, max|4th| < max|3rd| < max|delta| (correct)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-naive-modest-correct",
+  "description": "Claim: delta method degrades gracefully for Gamma-Gamma, |error| < 2 % in all rows (correct)",
+  "value": 1.1965684145662514,
+  "limit": 2.0,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-aperture-positive-correct",
+  "description": "Aperture averaging raises the averaged key rate in every row (correct)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-4th-order-report-conv",
+  "description": "Claim: 4th-order GG formula within ~0.02 % of quadrature in all Table-1 rows (report-conv exponent)",
+  "value": 0.01235476637127613,
+  "limit": 0.03,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-ordering-report-conv",
+  "description": "Error shrinks with order, max|4th| < max|3rd| < max|delta| (report-conv)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-naive-modest-report-conv",
+  "description": "Claim: delta method degrades gracefully for Gamma-Gamma, |error| < 2 % in all rows (report-conv)",
+  "value": 0.702951226547023,
+  "limit": 2.0,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-aperture-positive-report-conv",
+  "description": "Aperture averaging raises the averaged key rate in every row (report-conv)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G3-reproduce-table1",
+  "description": "Printed Table 1 entries reproduced with the report's exponent convention, within 0.25 pp (35 of 40)",
+  "value": 0.875,
+  "limit": 0.7,
+  "mode": ">=",
+  "unit": "fraction",
+  "status": "PASS",
+  "note": "rows L>=50 reproduce; the L=20 row does not (see G4-L20-artifact)"
+ },
+ {
+  "id": "G3-correct-exponent",
+  "description": "Table 1 with the correct exponent",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "26 of 40 printed entries are within 0.25 pp when the correct sigma_R^(12/5) is used; the differences are concentrated in the aperture-gain and delta-method columns at Rytov variance > 1 (the correct SI is larger there). The 4th-order formula stays within 0.03 % either way."
+ },
+ {
+  "id": "G4-ln-model-error-report",
+  "description": "Report convention: log-normal formula loses > 50 % of the key rate at Rytov variance 5 (2nd order)",
+  "value": 54.39634173855816,
+  "limit": 50.0,
+  "mode": ">=",
+  "unit": "|error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G4-ln-model-error-correct",
+  "description": "Correct exponent: error of the log-normal formula at Rytov variance 5 (2nd order); still large",
+  "value": 52.61091811325962,
+  "limit": 10.0,
+  "mode": ">=",
+  "unit": "|error| %",
+  "status": "PASS",
+  "note": "-52.6 % (correct exponent) vs -54.4 % (report convention)"
+ },
+ {
+  "id": "G4-order-no-fix",
+  "description": "Raising the log-normal order does not repair the model error (|4th| > 0.5 |2nd| in the last row, correct exponent)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G4-reproduce-table2",
+  "description": "Printed Table 2 entries reproduced with the report convention, tolerance max(1 pp, 10 %) (23 of 24)",
+  "value": 0.9583333333333334,
+  "limit": 0.6,
+  "mode": ">=",
+  "unit": "fraction",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G4-L20-artifact",
+  "description": "Table 1/2, L = 20 km row",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "the printed +0.36 % appears identically in the delta, 2nd, 3rd and 4th-order columns, so it does not depend on the formula. With the Laguerre, Bessel-K and Monte Carlo references used here the four errors are -0.002, -0.001, -0.006, +0.000 % (alpha, beta = 43, 162). A formula-independent offset of this kind points at the reference integral for very large shape parameters (or its normalisation), not at the expansion."
+ },
+ {
+  "id": "G5-4th-all-sigma",
+  "description": "4th-order GG error < 0.05 % for Rytov variance 0.1-5 (L = 80 km)",
+  "value": 0.015997474557800106,
+  "limit": 0.05,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G5-4th-all-sigma-report",
+  "description": "4th-order GG error < 0.05 % for Rytov variance 0.1-5 (report convention)",
+  "value": 0.01202222365160501,
+  "limit": 0.05,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G8-ln-naive-negative",
+  "description": "Report: naive delta applied to a log-normal channel gives a negative key rate near Rytov variance 2",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "this test: the delta-method key rate first becomes <= 0 at Rytov variance ~2.30 (single cumulative channel, sigma_X^2 = sigma_R^2)"
+ },
+ {
+  "id": "G6-logmean-best",
+  "description": "Report: expanding at the median (log-mean point) is better than at the mean or the mode (sum of |errors|, all rows)",
+  "value": 1.0,
+  "limit": 1.0,
+  "mode": ">=",
+  "unit": "bool",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G6-terminology",
+  "description": "Expansion point name",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "the report calls exp(E[ln eta]) the \"median\"; for Gamma-Gamma it is the geometric mean (log-mean), which differs slightly from the true median of eta. For the log-normal model the two coincide."
+ },
+ {
+  "id": "G7-laguerre-vs-bessel",
+  "description": "Laguerre tensor quadrature vs Bessel-K density quadrature (max over rows)",
+  "value": 1.1195414079827012e-10,
+  "limit": 0.0001,
+  "mode": "<=",
+  "unit": "max rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G7-mc",
+  "description": "Monte Carlo vs Laguerre quadrature: max |z|",
+  "value": 1.2410459022576108,
+  "limit": 4.0,
+  "mode": "<=",
+  "unit": "max |z|",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "G7-pdf-norm",
+  "description": "Bessel-K density integrates to 1 (max |norm-1|)",
+  "value": 7.038813976123492e-14,
+  "limit": 1e-06,
+  "mode": "<=",
+  "unit": "max abs. diff",
+  "status": "PASS",
+  "note": ""
+ }
+]

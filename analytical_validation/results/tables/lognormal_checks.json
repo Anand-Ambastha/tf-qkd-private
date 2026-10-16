@@ -1,0 +1,472 @@
+[
+ {
+  "id": "T0-validity-1e-17",
+  "description": "Validity distance, Cn2=1e-17, vs printed Table I",
+  "value": 1.535295014179472e-05,
+  "limit": 0.005,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-eq21-1e-17",
+  "description": "Closed form Eq.(21) vs exact solve, Cn2=1e-17",
+  "value": 7.964712883182995e-08,
+  "limit": 0.005,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-validity-1e-15",
+  "description": "Validity distance, Cn2=1e-15, vs printed Table I",
+  "value": 0.002139155207310373,
+  "limit": 0.005,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-eq21-1e-15",
+  "description": "Closed form Eq.(21) vs exact solve, Cn2=1e-15",
+  "value": 7.96471290896866e-08,
+  "limit": 0.005,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-validity-1e-13",
+  "description": "Validity distance, Cn2=1e-13, vs printed Table I",
+  "value": 0.0027324684277411394,
+  "limit": 0.005,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-eq21-1e-13",
+  "description": "Closed form Eq.(21) vs exact solve, Cn2=1e-13",
+  "value": 7.964712890265747e-08,
+  "limit": 0.005,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-17-10",
+  "description": "Per-arm Rytov variance, Cn2=1e-17, L=10 km, vs Table II",
+  "value": 0.0016655127763089824,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-17-50",
+  "description": "Per-arm Rytov variance, Cn2=1e-17, L=50 km, vs Table II",
+  "value": 0.00041450239659427486,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-17-100",
+  "description": "Per-arm Rytov variance, Cn2=1e-17, L=100 km, vs Table II",
+  "value": 0.0012439092173071702,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-15-10",
+  "description": "Per-arm Rytov variance, Cn2=1e-15, L=10 km, vs Table II",
+  "value": 0.0009635305643112853,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-15-50",
+  "description": "Per-arm Rytov variance, Cn2=1e-15, L=50 km, vs Table II",
+  "value": 0.00041450239659439683,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-15-100",
+  "description": "Per-arm Rytov variance, Cn2=1e-15, L=100 km, vs Table II",
+  "value": 0.0012439092173072818,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-13-10",
+  "description": "Per-arm Rytov variance, Cn2=1e-13, L=10 km, vs Table II",
+  "value": 0.0009635305643113902,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-13-50",
+  "description": "Per-arm Rytov variance, Cn2=1e-13, L=50 km, vs Table II",
+  "value": 0.0004145023965943725,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T0-tab2-1e-13-100",
+  "description": "Per-arm Rytov variance, Cn2=1e-13, L=100 km, vs Table II",
+  "value": 8.550901381630895e-05,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T1-deriv-pXX",
+  "description": "Analytic derivatives of pXX, orders 0-4, vs 60-digit reference (max over 6 distances)",
+  "value": 3.1640645688359167e-12,
+  "limit": 1e-07,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T1-deriv-eX",
+  "description": "Analytic derivatives of eX, orders 0-4, vs 60-digit reference (max over 6 distances)",
+  "value": 1.0330688089027924e-09,
+  "limit": 1e-07,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T1-deriv-eZ",
+  "description": "Analytic derivatives of eZ, orders 0-4, vs 60-digit reference (max over 6 distances)",
+  "value": 4.230819167701742e-10,
+  "limit": 1e-07,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T1-deriv-R",
+  "description": "Analytic derivatives of R, orders 0-4, vs 60-digit reference (max over 6 distances)",
+  "value": 3.1528216056202247e-10,
+  "limit": 1e-07,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T1-engine-vs-reference",
+  "description": "High-precision reference reproduces the validated engine (value, L=80 km)",
+  "value": 1.109130922694588e-12,
+  "limit": 1e-09,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T1-pxx-erratum",
+  "description": "Printed Eq.(6)/Appendix A bracket for pXX",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "Eq.(6) as printed gives pXX = 0.5 at L=80 km, whereas CAL Eq.(30) / the engine give 0.0015695. The A^2 term must sit outside the factor 1/2: pXX = (A/2)[e^{-(1-O)g}+e^{-(1+O)g}] - A^2 e^{-2g}. With this form all derivatives agree with the reference (check T1-deriv-pXX); the same bracket slip appears in the printed pXX derivatives."
+ },
+ {
+  "id": "T1-Dj-note",
+  "description": "Truncation residual D_j",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "D_j (CAL Delta_j) is eta-independent in CAL and in the engine (residual_j), so D_j^(n)=0 for n>=1; Appendix E says D_j^(n) \"follows identically\" from the sqrt(pZZ) terms, which would only hold for a different D_j. The analytic derivatives with D_j constant match the reference to ~1e-10."
+ },
+ {
+  "id": "T2-euler",
+  "description": "Theta^n eta^m = m^n eta^m via Stirling weights (n=1..4, m=1..6)",
+  "value": 2.0012973600301547e-16,
+  "limit": 1e-13,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T3-two-routes",
+  "description": "X-space vs eta-space formulation (78 cross-checks); manuscript claims < 1e-9",
+  "value": 3.3695753668968668e-09,
+  "limit": 1e-08,
+  "mode": "<=",
+  "unit": "max rel. diff",
+  "status": "PASS",
+  "note": "limited by double-precision cancellation in the analytic eta-space derivatives"
+ },
+ {
+  "id": "T3-count",
+  "description": "Number of cross-checks",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "78 (13 distances x 3 quantities x 2 orders)"
+ },
+ {
+  "id": "T4-sigmaX2-20",
+  "description": "sigma_X^2 at L=20 km vs printed",
+  "value": 0.00021789283783272412,
+  "limit": 0.0006,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-sigmaX2-50",
+  "description": "sigma_X^2 at L=50 km vs printed",
+  "value": 0.0003849121127639729,
+  "limit": 0.0006,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-sigmaX2-80",
+  "description": "sigma_X^2 at L=80 km vs printed",
+  "value": 0.00012739235028313978,
+  "limit": 0.0006,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-sigmaX2-100",
+  "description": "sigma_X^2 at L=100 km vs printed",
+  "value": 0.0003389137563587219,
+  "limit": 0.0006,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-sigmaX2-120",
+  "description": "sigma_X^2 at L=120 km vs printed",
+  "value": 0.00012369665772368754,
+  "limit": 0.0006,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-sigmaX2-160",
+  "description": "sigma_X^2 at L=160 km vs printed",
+  "value": 7.686623345076748e-05,
+  "limit": 0.0006,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-reproduce-tables",
+  "description": "Entries of printed Tables IV-VI reproduced (54 of 54)",
+  "value": 1.0,
+  "limit": 0.95,
+  "mode": ">=",
+  "unit": "fraction",
+  "status": "PASS",
+  "note": "tolerance: max(0.006 pp, 8% of the printed value)"
+ },
+ {
+  "id": "T4-claim-4th-order-R",
+  "description": "Claim: 4-term R error < 0.09 % over the sweep (checked on 13-point sweep below)",
+  "value": 0.07155905726708955,
+  "limit": 0.09,
+  "mode": "<=",
+  "unit": "max |error| %, Table rows",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-reference-GH-vs-quad",
+  "description": "Reference: Gauss-Hermite (200 nodes) vs adaptive quad (rel tol 1e-11), R at L=160 km",
+  "value": 3.207224365764592e-11,
+  "limit": 1e-09,
+  "mode": "<=",
+  "unit": "rel. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T4-claim-13pt-R4",
+  "description": "Claim: 4-term secret-key-rate error < 0.09 % over the full 13-point sweep",
+  "value": 0.07155905726708955,
+  "limit": 0.09,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-moments",
+  "description": "E[eta^n] = eta0^n exp(n(n-2) s^2/2) (Eq. 19) vs numerical, n=1..4",
+  "value": 1.2038138962155195e-15,
+  "limit": 1e-09,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-skewness",
+  "description": "Skewness of eta, Eq.(25), vs numerical",
+  "value": 2.3782354468568632e-14,
+  "limit": 1e-06,
+  "mode": "<=",
+  "unit": "max rel. error",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-skew-60",
+  "description": "Appendix H: gamma_1 ~ 0.70 at L=60 km",
+  "value": 0.0030000000000000027,
+  "limit": 0.02,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-skew-160",
+  "description": "Appendix H: gamma_1 ~ 2.0 at L=160 km",
+  "value": 0.009999999999999787,
+  "limit": 0.1,
+  "mode": "<=",
+  "unit": "abs. diff",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-skew-140",
+  "description": "Appendix H: \"gamma_1 ~ 41 at sigma_X^2 ~ 2.4 (Cn2=1e-16, L=140)\"",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "for Cn2=1e-16, L=140 km this test gives sigma_X^2 = 2.40 and gamma_1 = 41.4, matching the printed 41. The \"sigma_X^2 = 9.6\" quoted for the same case in the next sentence equals sigma_A^2+sigma_B^2 = 4 sigma_X^2, so it is a typo for 2.4."
+ },
+ {
+  "id": "T5-naive-0.007",
+  "description": "Appendix H: naive error -0.001 % at sigma_X^2=0.007",
+  "value": 2.8430073464285515e-05,
+  "limit": 0.003,
+  "mode": "<=",
+  "unit": "abs. diff, pp",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-naive-0.31",
+  "description": "Appendix H: naive error 0.18 % at sigma_X^2=0.31",
+  "value": 0.004505170694616145,
+  "limit": 0.01,
+  "mode": "<=",
+  "unit": "abs. diff, pp",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T5-naive-140",
+  "description": "Appendix H: naive error \"29 %\" at Cn2=1e-16, L=140",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "this test: +28.8 % at sigma_X^2 = 2.40: the 29 % is reproduced, but the printed sigma_X^2 = 9.6 should read 2.4."
+ },
+ {
+  "id": "T5-naive-total",
+  "description": "Appendix H: naive expansion in eta_A*eta_B errs -20.1 % at L=160",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "this test: -20.1 %"
+ },
+ {
+  "id": "T6-validity-4term",
+  "description": "4-term R error < 0.1 % while per-arm Rytov variance <= 0.2 (sigma_X^2 <= 0.1)",
+  "value": 0.005517490123296077,
+  "limit": 0.1,
+  "mode": "<=",
+  "unit": "max |error| %",
+  "status": "PASS",
+  "note": ""
+ },
+ {
+  "id": "T6-naive-negative",
+  "description": "Naive delta method gives a negative key rate",
+  "value": null,
+  "limit": null,
+  "mode": "info",
+  "unit": "",
+  "status": "INFO",
+  "note": "never up to sigma_X^2 = 3 in the manuscript (two-arm) convention; the progress report's \"negative key rate near Rytov variance two\" refers to a single cumulative log-normal channel and is tested in script 02"
+ },
+ {
+  "id": "T7-mc",
+  "description": "Monte Carlo (400,000 samples) vs quadrature reference: max |z|",
+  "value": 1.8633260847640354,
+  "limit": 4.0,
+  "mode": "<=",
+  "unit": "max |z| (std. errors)",
+  "status": "PASS",
+  "note": ""
+ }
+]

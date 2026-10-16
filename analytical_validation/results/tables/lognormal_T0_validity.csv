@@ -1,0 +1,4 @@
+source,Cn2,L_validity_km (this test),printed_km,Eq21_km
+Table I,1e-17,208.80,208.8,208.80
+Table I,1e-15,16.94,16.9,16.94
+Table I,1e-13,1.37,1.37,1.37

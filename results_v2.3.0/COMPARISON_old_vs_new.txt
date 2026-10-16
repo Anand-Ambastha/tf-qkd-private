@@ -1,0 +1,21 @@
+OLD (v2.1.0, pre-fix) vs NEW (v2.3.1) -- max range, km (example 04, AUTO / forced rows)
+
+                                    OLD      NEW
+weak     Gamma-Gamma (forced)      283.27   291.63
+weak     Corrected GG (forced)     281.59   288.29
+weak     AUTO                      283.27   291.63
+moderate Gamma-Gamma (forced)      253.15   291.63
+moderate Corrected GG (forced)     253.15   291.63
+moderate AUTO                      253.15   291.63
+strong   Corrected GG / AUTO       251.48   288.29
+strong   Gamma-Gamma (forced)       30.62   291.63   <- old value was an artifact of a hard sigma_R^2>300 cutoff
+Deterministic: 251.48 (unchanged)   Log-Normal (forced): unchanged (300 weak = sweep limit, 124.3 mod, 10.5 strong)
+
+Why they changed
+ 1. Gamma-Gamma alpha/beta exponent bug (v2.2.0): old scintillation index ~0 at strong turbulence, so the old
+    moderate/strong Gamma-Gamma looked almost deterministic (~251-253 km). Correct saturated fading gives ~292 km
+    in all classes (fading lifts the ergodic rate near the outage threshold).
+ 2. Example 04/05 had SIGMA_R2_CAP = 300 that forced plain GG/LN to R=0 beyond ~30 km at strong Cn2; removed.
+ 3. Example 04's hard-coded interpretation text (84-86 km, 79.45 km, 72.73 km) described an older setup and
+    contradicted its own tables; it is now generated from the results.
+Numbers differ by <1 km between examples 04/05 (Monte Carlo, grids) and 06 (quadrature + bisection).
