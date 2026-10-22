@@ -1,0 +1,97 @@
+\begin{table}[htbp]
+\centering\small
+\caption{Validity of the log-normal model. $L_{\rm val}$ is the total distance at which the per-arm plane-wave Rytov variance $\sigma_R^2(L/2)=1.23C_n^2k^{7/6}(L/2)^{11/6}$ reaches $1$; $L_{\rm val}\simeq0.5547\,\lambda^{7/11}(C_n^2)^{-6/11}$ is the closed form (Eq.~21 of the manuscript). Beyond $L_{\rm val}$ the Rytov perturbation series that underlies the log-normal law no longer converges. Values reproduce the printed Tables I--II of the manuscript.}
+\label{tab:val}
+\begin{tabular}{lccccc}
+\toprule
+$C_n^2$ [m$^{-2/3}$] & $L_{\rm val}$ [km] & closed form [km] & $\sigma_R^2(L/2)$, $L{=}10$ & $L{=}50$ & $L{=}100$ km\\
+\midrule
+$10^{-17}$ & $208.80$ & $208.80$ & $0.003806$ & $0.07277$ & $0.2593$ \\
+$10^{-15}$ & $16.94$ & $16.94$ & $0.3806$ & $7.277$ & $25.93$ \\
+$10^{-13}$ & $1.37$ & $1.37$ & $38.06$ & $727.7$ & $2593$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Log-normal (LN) versus Gamma--Gamma (GG) per arm at equal per-arm Rytov variance. $\mathrm{SI}_{\rm LN}=e^{\sigma_R^2}-1$ grows without bound while $\mathrm{SI}_{\rm GG}$ saturates near $1$. $R_{\rm GG}$, $R_{\rm LN}$: turbulence-averaged key rate [bit/pulse]; error $=100(R_{\rm LN}-R_{\rm GG})/R_{\rm GG}$. Both references are numerical (Bessel-$K$ log-density convolution for GG, Simpson quadrature in $X$ for LN, both with the combined transmittance capped at $1$). Rows with $\sigma_R^2>1$ of the weak class lie beyond the $252$~km deterministic cut-off ($R<10^{-9}$) and are omitted.}
+\label{tab:lnvsgg}
+\begin{tabular}{lccccccc}
+\toprule
+$C_n^2$ & $\sigma_R^2(L/2)$ & $L$ [km] & $\mathrm{SI}_{\rm LN}$ & $\mathrm{SI}_{\rm GG}$ & $R_{\rm GG}$ & $R_{\rm LN}$ & LN error [\%]\\
+\midrule
+$10^{-17}$ & $0.25$ & $98.02$ & $0.28$ & $0.24$ & $4.328\times10^{-4}$ & $4.301\times10^{-4}$ & $-0.6$ \\
+$10^{-17}$ & $0.50$ & $143.06$ & $0.65$ & $0.43$ & $6.547\times10^{-5}$ & $6.367\times10^{-5}$ & $-2.8$ \\
+$10^{-17}$ & $1.00$ & $208.80$ & $1.72$ & $0.71$ & $3.914\times10^{-6}$ & $3.460\times10^{-6}$ & $-11.6$ \\
+\midrule
+$10^{-15}$ & $0.25$ & $7.95$ & $0.28$ & $0.24$ & $3.193\times10^{-2}$ & $3.142\times10^{-2}$ & $-1.6$ \\
+$10^{-15}$ & $0.50$ & $11.60$ & $0.65$ & $0.43$ & $2.703\times10^{-2}$ & $2.566\times10^{-2}$ & $-5.0$ \\
+$10^{-15}$ & $1.00$ & $16.94$ & $1.72$ & $0.71$ & $2.163\times10^{-2}$ & $1.858\times10^{-2}$ & $-14.1$ \\
+$10^{-15}$ & $2.00$ & $24.72$ & $6.39$ & $0.99$ & $1.544\times10^{-2}$ & $1.046\times10^{-2}$ & $-32.2$ \\
+$10^{-15}$ & $4.00$ & $36.08$ & $53.60$ & $1.17$ & $8.377\times10^{-3}$ & $3.568\times10^{-3}$ & $-57.4$ \\
+\midrule
+$10^{-13}$ & $0.25$ & $0.64$ & $0.28$ & $0.24$ & $3.710\times10^{-2}$ & $3.655\times10^{-2}$ & $-1.5$ \\
+$10^{-13}$ & $0.50$ & $0.94$ & $0.65$ & $0.43$ & $3.364\times10^{-2}$ & $3.198\times10^{-2}$ & $-4.9$ \\
+$10^{-13}$ & $1.00$ & $1.37$ & $1.72$ & $0.71$ & $3.011\times10^{-2}$ & $2.579\times10^{-2}$ & $-14.4$ \\
+$10^{-13}$ & $2.00$ & $2.00$ & $6.39$ & $0.99$ & $2.720\times10^{-2}$ & $1.797\times10^{-2}$ & $-33.9$ \\
+$10^{-13}$ & $4.00$ & $2.93$ & $53.60$ & $1.17$ & $2.524\times10^{-2}$ & $9.554\times10^{-3}$ & $-62.1$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Failure of the log-normal analytic formulas as the log-variance grows (single operating point $L=80$~km, key rate $R$; errors against Gauss--Hermite/Simpson quadrature, $100(\text{formula}-\text{ref})/\text{ref}$). ``mean is the delta method about $\bar\eta$, ``2-term and ``4-term are Eq.~\eqref{eq:ln} truncated after $\Theta^2$ and $\Theta^4$. $\gamma_1$ is the skewness of $\eta$. For $\sigma_X^2\ge2$ the unclipped reference overflows; the three formulas then give $R=4.0\times10^{-4}$, $2.6\times10^{-4}$, $3.4\times10^{-4}$ ($\sigma_X^2=2$) and $2.9\times10^{-4}$, $1.2\times10^{-4}$, $1.8\times10^{-4}$ ($\sigma_X^2=3$), i.e.\ their largest/smallest ratio is $1.5$ ($\sigma_X^2=2$) and $2.4$ ($\sigma_X^2=3$).}
+\label{tab:stress}
+\begin{tabular}{cccccrr}
+\toprule
+$\sigma_X^2$ & $\sigma_R^2(L/2)$ & $\gamma_1$ & $R$ (ref.) & mean [\%] & 2-term [\%] & 4-term [\%]\\
+\midrule
+0.01 & $0.02$ & $0.302$ & $1.019\times10^{-3}$ & $0.000$ & $-0.002$ & $0.000$ \\
+0.05 & $0.10$ & $0.691$ & $9.993\times10^{-4}$ & $+0.001$ & $-0.044$ & $-0.001$ \\
+0.1 & $0.20$ & $1.01$ & $9.751\times10^{-4}$ & $+0.002$ & $-0.173$ & $-0.006$ \\
+0.307 & $0.61$ & $2.01$ & $8.811\times10^{-4}$ & $+0.026$ & $-1.483$ & $-0.136$ \\
+0.5 & $1.00$ & $2.94$ & $8.018\times10^{-4}$ & $+0.077$ & $-3.607$ & $-0.513$ \\
+1 & $2.00$ & $6.18$ & $6.293\times10^{-4}$ & $+0.408$ & $-11.722$ & $-2.963$ \\
+1.5 & $3.00$ & $12.1$ & $4.952\times10^{-4}$ & $+1.316$ & $-21.793$ & $-7.448$ \\
+2 & $4.00$ & $23.7$ & -- & -- & -- & -- \\
+3 & $6.00$ & $96.5$ & -- & -- & -- & -- \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Breakdown of the delta method (mean-based expansion) for the key rate. $\gamma_1=(e^{\sigma_X^2}+2)\sqrt{e^{\sigma_X^2}-1}$ is the skewness of $\eta$; errors are against quadrature. The last row repeats the expansion in the total transmittance $\eta_{\rm tot}=\eta^2$. ``Appendix~H lists the values printed in the manuscript; they are reproduced (the printed ``$\sigma_X^2=9.6$ for the $140$~km case should read $2.4$).}
+\label{tab:delta}
+\begin{tabular}{cccccc}
+\toprule
+$L$ [km] & $C_n^2$ & $\sigma_X^2$ & $\gamma_1$ & error [\%] (this work) & printed [\%]\\
+\midrule
+$20$ & $10^{-17}$ & $0.007$ & $0.252$ & $-0.001$ & $-0.001$ \\
+$160$ & $10^{-17}$ & $0.307$ & $2.01$ & $+0.185$ & $+0.180$ \\
+$140$ & $10^{-16}$ & $2.403$ & $41.4$ & $+28.836$ & $+29.000$ \\
+$160$ (in $\eta_{\rm tot}$) & $10^{-17}$ & $0.307$ & $2.01$ & $-20.133$ & $-20.100$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Maximum range (largest total distance with ergodic key rate $>10^{-9}$ bit/pulse), per-arm models, from \texttt{results\_v2.3.0/reports/GAMMA\_GAMMA\_PER\_ARM\_REPORT.txt}. Every class has its maximum range beyond its own log-normal validity limit, so the log-normal numbers are diagnostic only; Monte Carlo disagrees with the log-normal quadrature at its own maximum-range point by $-28\%$ (moderate) and $-46\%$ (strong).}
+\label{tab:range-ln}
+\begin{tabular}{lccccc}
+\toprule
+$C_n^2$ & $L_{\rm val}$ [km] & deterministic [km] & GG [km] & LN [km] & GG$-$LN [km] \\
+\midrule
+$10^{-17}$ & $208.80$ & $252.04$ & $291.72$ & $317.60$ & $-25.88$ \\
+$10^{-15}$ & $16.94$ & $252.04$ & $293.23$ & $132.73$ & $+160.50$ \\
+$10^{-13}$ & $1.37$ & $252.04$ & $291.72$ & $13.08$ & $+278.64$ \\
+\bottomrule
+\end{tabular}
+\end{table}

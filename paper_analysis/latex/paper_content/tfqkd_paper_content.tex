@@ -1,0 +1,574 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array,multirow}
+\usepackage{caption}
+\usepackage{needspace}
+\usepackage[T1]{fontenc}
+\usepackage[hidelinks]{hyperref}
+\captionsetup{font=small,labelfont=bf,width=0.95\linewidth}
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\setlength{\tabcolsep}{4pt}
+\title{Turbulence-averaged TF-QKD key rate:\\ result tables and analytical derivation}
+\author{Content prepared from the repository \texttt{Anand-Ambastha/tf-qkd-private}}
+\date{20 October 2026}
+\begin{document}
+\maketitle
+
+\section{Scope and conventions}
+This document collects (i) the tables that show why the log-normal model and the low-order analytic approximations cannot be used at long distance (Sec.~\ref{sec:fail}), (ii) the Gamma--Gamma results with and without beam wander (Sec.~\ref{sec:bw}), (iii) the analytic approximations of the Gamma--Gamma average and their errors, mean versus 2nd-order median versus 4th-order median (Sec.~\ref{sec:approx}), and (iv) the complete derivation from the Gamma--Gamma model to the cumulant--Euler formula and to the log-normal formula (Sec.~\ref{sec:derivation}). All formulas and numbers are those of the repository code (\texttt{src/}, \texttt{analytical\_validation/}, \texttt{results\_v2.3.0/}); the validation scripts were re-run and reproduce the stored result files (70 numerical checks pass, 0 fail).
+
+\paragraph{Provenance.} Tables~\ref{tab:val}, \ref{tab:stress}, \ref{tab:delta}, \ref{tab:gg-single}, \ref{tab:expoint} are the repository result tables (\texttt{analytical\_validation/results/tables/}); Tables~\ref{tab:range-ln} and \ref{tab:bw-range} are copied from the repository reports. Tables~\ref{tab:lnvsgg}, \ref{tab:bw-skr}, \ref{tab:perarm-weak}, \ref{tab:perarm-mod} were computed for this document by calling the repository functions (\texttt{legacy\_baseline}, \texttt{cal\_derivatives}, \texttt{averaging}, \texttt{beam\_broadening}, the per-arm Gamma--Gamma channel) at the stated distances; the scripts are in \texttt{paper\_analysis/scripts/} of the repository.
+
+\paragraph{Beam wander.} The repository has no stand-alone beam-wander model for the Gamma--Gamma channel. Beam wander enters through the turbulence-induced \emph{long-term beam broadening} $W_{\rm LT}$ (``GG+BB'', \texttt{gamma\_gamma\_bb}), which already contains the wander of the beam centroid; ``with beam wander'' in this document means GG+BB (Sec.~\ref{sec:bb}). Pointing jitter (\texttt{corrected\_gamma\_gamma}) is not used, to avoid counting the same effect twice.
+
+\paragraph{Errors.} Every error is $100\,(\text{approximation}-\text{reference})/\text{reference}$ in percent. References are independent of the formulas under test: Gauss--Hermite/Simpson quadrature in $X=\ln(\eta/\eta_0)$ for the log-normal channel; tensor Gauss--Laguerre quadrature (single Gamma--Gamma channel; checked against Bessel-$K$ quadrature and Monte Carlo); numerical convolution of the Bessel-$K$ log-densities (per-arm Gamma--Gamma).
+
+\begin{table}[htbp]
+\centering\small
+\caption{Operating point used in all tables (identical to \texttt{analytical\_validation/common.py} and \texttt{examples/}).}
+\label{tab:params}
+\begin{tabular}{ll@{\qquad}ll}
+\toprule
+wavelength & $\lambda=1550$~nm & signal amplitude & $\alpha=0.2$ \\
+atmospheric attenuation & $0.046$~km$^{-1}$ & dark-count probability & $p_d=10^{-7}$ \\
+transmitter waist & $w_0=0.05$~m & phase offsets & $\theta_A=-\theta_B=\arcsin\sqrt{0.02}$ \\
+receiver radius & $a=0.15$~m ($D=0.30$~m) & photon-number cut-off & $N_{\max}=4$,\; $\varphi=0$ \\
+$C_n^2$ classes & $10^{-17},\,10^{-15},\,10^{-13}\ \mathrm{m^{-2/3}}$ (weak / moderate / strong) & rate threshold (max.\ range) & $R>10^{-9}$ bit/pulse \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Why the log-normal model and the low-order approximations fail at long distance}
+\label{sec:fail}
+Tables~\ref{tab:val}--\ref{tab:range-ln} give, in this order, the validity distance of the log-normal law, the disagreement between log-normal and Gamma--Gamma key rates, the loss of accuracy of the log-normal analytic formulas as the log-variance grows, the breakdown of the delta method, and the resulting maximum ranges.
+\begin{table}[htbp]
+\centering\small
+\caption{Validity of the log-normal model. $L_{\rm val}$ is the total distance at which the per-arm plane-wave Rytov variance $\sigma_R^2(L/2)=1.23C_n^2k^{7/6}(L/2)^{11/6}$ reaches $1$; $L_{\rm val}\simeq0.5547\,\lambda^{7/11}(C_n^2)^{-6/11}$ is the closed form (Eq.~21 of the manuscript). Beyond $L_{\rm val}$ the Rytov perturbation series that underlies the log-normal law no longer converges. Values reproduce the printed Tables I--II of the manuscript.}
+\label{tab:val}
+\begin{tabular}{lccccc}
+\toprule
+$C_n^2$ [m$^{-2/3}$] & $L_{\rm val}$ [km] & closed form [km] & $\sigma_R^2(L/2)$, $L{=}10$ & $L{=}50$ & $L{=}100$ km\\
+\midrule
+$10^{-17}$ & $208.80$ & $208.80$ & $0.003806$ & $0.07277$ & $0.2593$ \\
+$10^{-15}$ & $16.94$ & $16.94$ & $0.3806$ & $7.277$ & $25.93$ \\
+$10^{-13}$ & $1.37$ & $1.37$ & $38.06$ & $727.7$ & $2593$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Log-normal (LN) versus Gamma--Gamma (GG) per arm at equal per-arm Rytov variance. $\mathrm{SI}_{\rm LN}=e^{\sigma_R^2}-1$ grows without bound while $\mathrm{SI}_{\rm GG}$ saturates near $1$. $R_{\rm GG}$, $R_{\rm LN}$: turbulence-averaged key rate [bit/pulse]; error $=100(R_{\rm LN}-R_{\rm GG})/R_{\rm GG}$. Both references are numerical (Bessel-$K$ log-density convolution for GG, Simpson quadrature in $X$ for LN, both with the combined transmittance capped at $1$). Rows with $\sigma_R^2>1$ of the weak class lie beyond the $252$~km deterministic cut-off ($R<10^{-9}$) and are omitted.}
+\label{tab:lnvsgg}
+\begin{tabular}{lccccccc}
+\toprule
+$C_n^2$ & $\sigma_R^2(L/2)$ & $L$ [km] & $\mathrm{SI}_{\rm LN}$ & $\mathrm{SI}_{\rm GG}$ & $R_{\rm GG}$ & $R_{\rm LN}$ & LN error [\%]\\
+\midrule
+$10^{-17}$ & $0.25$ & $98.02$ & $0.28$ & $0.24$ & $4.328\times10^{-4}$ & $4.301\times10^{-4}$ & $-0.6$ \\
+$10^{-17}$ & $0.50$ & $143.06$ & $0.65$ & $0.43$ & $6.547\times10^{-5}$ & $6.367\times10^{-5}$ & $-2.8$ \\
+$10^{-17}$ & $1.00$ & $208.80$ & $1.72$ & $0.71$ & $3.914\times10^{-6}$ & $3.460\times10^{-6}$ & $-11.6$ \\
+\midrule
+$10^{-15}$ & $0.25$ & $7.95$ & $0.28$ & $0.24$ & $3.193\times10^{-2}$ & $3.142\times10^{-2}$ & $-1.6$ \\
+$10^{-15}$ & $0.50$ & $11.60$ & $0.65$ & $0.43$ & $2.703\times10^{-2}$ & $2.566\times10^{-2}$ & $-5.0$ \\
+$10^{-15}$ & $1.00$ & $16.94$ & $1.72$ & $0.71$ & $2.163\times10^{-2}$ & $1.858\times10^{-2}$ & $-14.1$ \\
+$10^{-15}$ & $2.00$ & $24.72$ & $6.39$ & $0.99$ & $1.544\times10^{-2}$ & $1.046\times10^{-2}$ & $-32.2$ \\
+$10^{-15}$ & $4.00$ & $36.08$ & $53.60$ & $1.17$ & $8.377\times10^{-3}$ & $3.568\times10^{-3}$ & $-57.4$ \\
+\midrule
+$10^{-13}$ & $0.25$ & $0.64$ & $0.28$ & $0.24$ & $3.710\times10^{-2}$ & $3.655\times10^{-2}$ & $-1.5$ \\
+$10^{-13}$ & $0.50$ & $0.94$ & $0.65$ & $0.43$ & $3.364\times10^{-2}$ & $3.198\times10^{-2}$ & $-4.9$ \\
+$10^{-13}$ & $1.00$ & $1.37$ & $1.72$ & $0.71$ & $3.011\times10^{-2}$ & $2.579\times10^{-2}$ & $-14.4$ \\
+$10^{-13}$ & $2.00$ & $2.00$ & $6.39$ & $0.99$ & $2.720\times10^{-2}$ & $1.797\times10^{-2}$ & $-33.9$ \\
+$10^{-13}$ & $4.00$ & $2.93$ & $53.60$ & $1.17$ & $2.524\times10^{-2}$ & $9.554\times10^{-3}$ & $-62.1$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Failure of the log-normal analytic formulas as the log-variance grows (single operating point $L=80$~km, key rate $R$; errors against Gauss--Hermite/Simpson quadrature, $100(\text{formula}-\text{ref})/\text{ref}$). ``mean is the delta method about $\bar\eta$, ``2-term and ``4-term are Eq.~\eqref{eq:ln} truncated after $\Theta^2$ and $\Theta^4$. $\gamma_1$ is the skewness of $\eta$. For $\sigma_X^2\ge2$ the unclipped reference overflows; the three formulas then give $R=4.0\times10^{-4}$, $2.6\times10^{-4}$, $3.4\times10^{-4}$ ($\sigma_X^2=2$) and $2.9\times10^{-4}$, $1.2\times10^{-4}$, $1.8\times10^{-4}$ ($\sigma_X^2=3$), i.e.\ their largest/smallest ratio is $1.5$ ($\sigma_X^2=2$) and $2.4$ ($\sigma_X^2=3$).}
+\label{tab:stress}
+\begin{tabular}{cccccrr}
+\toprule
+$\sigma_X^2$ & $\sigma_R^2(L/2)$ & $\gamma_1$ & $R$ (ref.) & mean [\%] & 2-term [\%] & 4-term [\%]\\
+\midrule
+0.01 & $0.02$ & $0.302$ & $1.019\times10^{-3}$ & $0.000$ & $-0.002$ & $0.000$ \\
+0.05 & $0.10$ & $0.691$ & $9.993\times10^{-4}$ & $+0.001$ & $-0.044$ & $-0.001$ \\
+0.1 & $0.20$ & $1.01$ & $9.751\times10^{-4}$ & $+0.002$ & $-0.173$ & $-0.006$ \\
+0.307 & $0.61$ & $2.01$ & $8.811\times10^{-4}$ & $+0.026$ & $-1.483$ & $-0.136$ \\
+0.5 & $1.00$ & $2.94$ & $8.018\times10^{-4}$ & $+0.077$ & $-3.607$ & $-0.513$ \\
+1 & $2.00$ & $6.18$ & $6.293\times10^{-4}$ & $+0.408$ & $-11.722$ & $-2.963$ \\
+1.5 & $3.00$ & $12.1$ & $4.952\times10^{-4}$ & $+1.316$ & $-21.793$ & $-7.448$ \\
+2 & $4.00$ & $23.7$ & -- & -- & -- & -- \\
+3 & $6.00$ & $96.5$ & -- & -- & -- & -- \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Breakdown of the delta method (mean-based expansion) for the key rate. $\gamma_1=(e^{\sigma_X^2}+2)\sqrt{e^{\sigma_X^2}-1}$ is the skewness of $\eta$; errors are against quadrature. The last row repeats the expansion in the total transmittance $\eta_{\rm tot}=\eta^2$. ``Appendix~H lists the values printed in the manuscript; they are reproduced (the printed ``$\sigma_X^2=9.6$ for the $140$~km case should read $2.4$).}
+\label{tab:delta}
+\begin{tabular}{cccccc}
+\toprule
+$L$ [km] & $C_n^2$ & $\sigma_X^2$ & $\gamma_1$ & error [\%] (this work) & printed [\%]\\
+\midrule
+$20$ & $10^{-17}$ & $0.007$ & $0.252$ & $-0.001$ & $-0.001$ \\
+$160$ & $10^{-17}$ & $0.307$ & $2.01$ & $+0.185$ & $+0.180$ \\
+$140$ & $10^{-16}$ & $2.403$ & $41.4$ & $+28.836$ & $+29.000$ \\
+$160$ (in $\eta_{\rm tot}$) & $10^{-17}$ & $0.307$ & $2.01$ & $-20.133$ & $-20.100$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Maximum range (largest total distance with ergodic key rate $>10^{-9}$ bit/pulse), per-arm models, from \texttt{results\_v2.3.0/reports/GAMMA\_GAMMA\_PER\_ARM\_REPORT.txt}. Every class has its maximum range beyond its own log-normal validity limit, so the log-normal numbers are diagnostic only; Monte Carlo disagrees with the log-normal quadrature at its own maximum-range point by $-28\%$ (moderate) and $-46\%$ (strong).}
+\label{tab:range-ln}
+\begin{tabular}{lccccc}
+\toprule
+$C_n^2$ & $L_{\rm val}$ [km] & deterministic [km] & GG [km] & LN [km] & GG$-$LN [km] \\
+\midrule
+$10^{-17}$ & $208.80$ & $252.04$ & $291.72$ & $317.60$ & $-25.88$ \\
+$10^{-15}$ & $16.94$ & $252.04$ & $293.23$ & $132.73$ & $+160.50$ \\
+$10^{-13}$ & $1.37$ & $252.04$ & $291.72$ & $13.08$ & $+278.64$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Needspace{8\baselineskip}\paragraph{Reading the tables.}
+\begin{enumerate}
+\item \emph{Validity.} The log-normal model ends at $\sigma_R^2(L/2)=1$, i.e.\ at $208.8$, $16.9$ and $1.37$~km for $C_n^2=10^{-17},10^{-15},10^{-13}$ (Table~\ref{tab:val}). The maximum ranges of Table~\ref{tab:range-ln} ($\approx290$~km) lie beyond these limits in all three classes.
+\item \emph{Model error.} The log-normal scintillation index $e^{\sigma_R^2}-1$ diverges, while the Gamma--Gamma index saturates ($0.71$ at $\sigma_R^2=1$, $1.17$ at $4$). Already at $\sigma_R^2=1$ the log-normal key rate is $11.6$--$14.4\%$ below the Gamma--Gamma one, and $57$--$62\%$ below at $\sigma_R^2=4$ (moderate and strong class, Table~\ref{tab:lnvsgg}); the log-normal maximum range is $132.7$ and $13.1$~km against $293.2$ and $291.7$~km (Table~\ref{tab:range-ln}).
+\item \emph{Analytic formulas inside the log-normal model.} The 4-term formula Eq.~\eqref{eq:ln} has an error of $-6\times10^{-6}\%$ at $\sigma_X^2=0.01$, $-0.14\%$ at $0.307$, $-3.0\%$ at $1.0$ and $-7.4\%$ at $1.5$; the 2-term formula $-1.5\%$, $-11.7\%$, $-21.8\%$ at $0.307$, $1$, $1.5$ (Table~\ref{tab:stress}). For $\sigma_X^2=2$--$3$ the largest and smallest of the three formulas differ by a factor $1.5$ ($\sigma_X^2=2$) and $2.4$ ($\sigma_X^2=3$).
+\item \emph{Delta method.} The skewness of $\eta$ is $\gamma_1=41$ at $\sigma_X^2=2.4$ and the mean-based expansion errs by $+28.8\%$; in $\eta_{\rm tot}$ it errs by $-20.1\%$ already at $\sigma_X^2=0.31$ (Table~\ref{tab:delta}). Caution: at a given operating point the delta method can be accurate far beyond this (Table~\ref{tab:stress}: within $1.3\%$ up to $\sigma_X^2=1.5$ at $L=80$~km), because $R(\eta)$ is locally close to a power law $\eta^{p}$ with $p=\Theta R/R=1.36,\,1.05,\,1.13$ at $L=20,80,160$~km (derivatives of the repository), so the curvature term is small. Its accuracy therefore depends on the operating point rather than on a controlled expansion parameter.
+\end{enumerate}
+
+\section{Gamma--Gamma results with and without beam wander}
+\label{sec:bw}
+Per-arm Gamma--Gamma fading (independent arms of length $L/2$, $\eta=\eta_A\eta_B$) without and with turbulence-induced long-term beam broadening, which contains beam wander. Broadening is a deterministic loss on the nominal transmittance of each arm, $\eta_{\rm arm}\to\eta_{\rm arm}f_{\rm bb}$ with $f_{\rm bb}=[1-e^{-2a^2/W_{\rm LT}^2}]/[1-e^{-2a^2/W^2}]$ and $W_{\rm LT}^2=W^2(1+1.63\,\sigma_R^{12/5}\Lambda)$ (Sec.~\ref{sec:bb}); the fading law and $(\alpha,\beta)$ are unchanged.
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{Gamma--Gamma (per arm) key rate without (GG) and with (GG+BB) turbulence-induced long-term beam broadening, which contains beam wander ($\alpha=0.2$ fixed, bit/pulse). $W$, $W_{\rm LT}$: free-space and long-term beam radius at one receiver [m]; BB loss $=-10\log_{10}f_{\rm bb}^2$ [dB]; $R_{\rm det}$: deterministic channel without turbulence. Ergodic rates by the repository's 2-D quadrature (300 nodes per arm). $^{\dagger}$: below the $10^{-9}$ threshold. Weak-class values agree with an independent exact reference (Table~\ref{tab:perarm-weak} method) to $\le0.006\%$.}
+\label{tab:bw-skr}
+\begin{tabular}{lcccccccrr}
+\toprule
+$C_n^2$ & $L$ [km] & $\sigma_R^2(L/2)$ & $W$ & $W_{\rm LT}$ & BB loss [dB] & $R_{\rm det}$ & $R_{\rm GG}$ & $R_{\rm GG+BB}$ & ratio\\
+\midrule
+$10^{-17}$ & 20 & $0.0136$ & $0.11$ & $0.11$ & $0.00$ & $2.36\times10^{-2}$ & $2.36\times10^{-2}$ & $2.35\times10^{-2}$ & $1.000$ \\
+$10^{-17}$ & 50 & $0.0728$ & $0.25$ & $0.25$ & $0.08$ & $4.65\times10^{-3}$ & $4.57\times10^{-3}$ & $4.52\times10^{-3}$ & $0.990$ \\
+$10^{-17}$ & 80 & $0.172$ & $0.40$ & $0.40$ & $0.18$ & $1.02\times10^{-3}$ & $9.84\times10^{-4}$ & $9.63\times10^{-4}$ & $0.978$ \\
+$10^{-17}$ & 100 & $0.259$ & $0.50$ & $0.50$ & $0.25$ & $4.21\times10^{-4}$ & $3.97\times10^{-4}$ & $3.85\times10^{-4}$ & $0.970$ \\
+$10^{-17}$ & 120 & $0.362$ & $0.59$ & $0.61$ & $0.32$ & $1.83\times10^{-4}$ & $1.69\times10^{-4}$ & $1.62\times10^{-4}$ & $0.961$ \\
+$10^{-17}$ & 160 & $0.614$ & $0.79$ & $0.81$ & $0.47$ & $3.72\times10^{-5}$ & $3.29\times10^{-5}$ & $3.10\times10^{-5}$ & $0.941$ \\
+\midrule
+$10^{-15}$ & 20 & $1.36$ & $0.11$ & $0.15$ & $1.20$ & $2.36\times10^{-2}$ & $1.73\times10^{-2}$ & $1.51\times10^{-2}$ & $0.874$ \\
+$10^{-15}$ & 50 & $7.28$ & $0.25$ & $0.53$ & $10.72$ & $4.65\times10^{-3}$ & $3.68\times10^{-3}$ & $9.57\times10^{-4}$ & $0.260$ \\
+$10^{-15}$ & 80 & $17.2$ & $0.40$ & $1.07$ & $16.10$ & $1.02\times10^{-3}$ & $7.89\times10^{-4}$ & $1.12\times10^{-4}$ & $0.142$ \\
+$10^{-15}$ & 100 & $25.9$ & $0.50$ & $1.50$ & $18.51$ & $4.21\times10^{-4}$ & $3.22\times10^{-4}$ & $3.25\times10^{-5}$ & $0.101$ \\
+$10^{-15}$ & 120 & $36.2$ & $0.59$ & $1.98$ & $20.45$ & $1.83\times10^{-4}$ & $1.40\times10^{-4}$ & $9.71\times10^{-6}$ & $0.070$ \\
+$10^{-15}$ & 160 & $61.4$ & $0.79$ & $3.10$ & $23.45$ & $3.72\times10^{-5}$ & $2.82\times10^{-5}$ & $5.08\times10^{-7}$ & $0.018$ \\
+\midrule
+$10^{-13}$ & 20 & $136$ & $0.11$ & $1.71$ & $36.10$ & $2.36\times10^{-2}$ & $1.53\times10^{-2}$ & $1.82\times10^{-4}$ & $0.012$ \\
+$10^{-13}$ & 50 & $728$ & $0.25$ & $7.40$ & $55.83$ & $4.65\times10^{-3}$ & $3.72\times10^{-3}$ & $2.35\times10^{-6}$ & $6.3\times10^{-4}$ \\
+$10^{-13}$ & 80 & $1.72e+03$ & $0.40$ & $15.69$ & $62.63$ & $1.02\times10^{-3}$ & $8.04\times10^{-4}$ & $2.22\times10^{-9}$ & $2.8\times10^{-6}$ \\
+$10^{-13}$ & 100 & $2.59e+03$ & $0.50$ & $22.42$ & $65.42$ & $4.21\times10^{-4}$ & $3.28\times10^{-4}$ & $2.41\times10^{-17}$$^{\dagger}$ & $7.3\times10^{-14}$ \\
+$10^{-13}$ & 120 & $3.62e+03$ & $0.59$ & $30.01$ & $67.59$ & $1.83\times10^{-4}$ & $1.42\times10^{-4}$ & $0$$^{\dagger}$ & $0$ \\
+$10^{-13}$ & 160 & $6.14e+03$ & $0.79$ & $47.55$ & $70.85$ & $3.72\times10^{-5}$ & $2.87\times10^{-5}$ & $0$$^{\dagger}$ & $0$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Maximum range with and without beam broadening (beam wander), per arm, from \texttt{results\_v2.3.0/reports/BEAM\_BROADENING\_REPORT.txt}. Without broadening Gamma--Gamma saturates and the range is nearly independent of $C_n^2$; with broadening it falls steeply with $C_n^2$. For $\sigma_R^2\gg1$ the broadening law $1.63\,\sigma_R^{12/5}\Lambda$ keeps growing, so the strong-class GG+BB range is a lower bound and plain GG the matching upper bound.}
+\label{tab:bw-range}
+\begin{tabular}{lccccc}
+\toprule
+$C_n^2$ & deterministic [km] & det.+BB [km] & GG [km] & GG+BB [km] & BB effect on GG \\
+\midrule
+$10^{-17}$ & $252.04$ & $249.06$ & $291.72$ & $287.94$ & $-3.78$ km ($-1.3\%$) \\
+$10^{-15}$ & $252.04$ & $167.19$ & $293.23$ & $198.61$ & $-94.62$ km ($-32.3\%$) \\
+$10^{-13}$ & $252.04$ & $63.79$ & $291.72$ & $81.89$ & $-209.84$ km ($-71.9\%$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Needspace{8\baselineskip}\paragraph{Reading the tables.}
+\begin{enumerate}
+\item \emph{Weak class.} Beam wander costs at most $6\%$ of the key rate at $L=160$~km ($R_{\rm GG+BB}/R_{\rm GG}=0.94$) and $3.8$~km ($1.3\%$) of range (Table~\ref{tab:bw-range}).
+\item \emph{Moderate class.} The ratio falls to $0.26$ at $50$~km, $0.14$ at $80$~km and $0.018$ at $160$~km; the range shrinks by $94.6$~km ($32.3\%$).
+\item \emph{Strong class.} The long-term beam is $1.7$~m at $20$~km and $15.7$~m at $80$~km ($W=0.11$ and $0.40$~m), the rate is below $10^{-9}$ from $\approx80$~km on, and the range drops by $209.8$~km ($71.9\%$). Plain Gamma--Gamma, which only redistributes power around a fixed mean, keeps a range of $\approx292$~km for all three classes.
+\item \emph{Assumptions to state when quoting.} Horizontal path, constant $C_n^2$, collimated Gaussian transmitter; $\alpha,\beta$ keep their plane-wave values (first-order correction); no extra pointing jitter on top of $W_{\rm LT}$; the broadening law keeps growing for $\sigma_R^2\gg1$, so strong-class GG+BB values are lower bounds.
+\end{enumerate}
+
+\section{Analytic approximations of the Gamma--Gamma average and their errors}
+\label{sec:approx}
+Three approximations are compared, all evaluated with the analytic derivatives of the repository: \emph{mean} (delta method about $\mathbb E[\eta]$ or $\mathbb E[\eta_{\rm tot}]$), \emph{2nd-order median} and \emph{4th-order median} (Eq.~\eqref{eq:main} truncated after $\Theta^2$ resp.\ $\Theta^4$, expanded about the log-mean point $\eta_m=\eta_0e^{c_1}$). Table~\ref{tab:gg-single} is the progress-report setting (one cumulative channel, aperture-averaged); Tables~\ref{tab:perarm-weak} and \ref{tab:perarm-mod} use the per-arm model of the code, without and with beam wander.
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{Gamma--Gamma analytic approximations of $\mathbb E[R]$, single cumulative channel $\eta_{\rm tot}=\eta_{\rm FSO}(L)\,I$, aperture-averaged ($D=0.30$~m, $\sigma_R^2=\sigma_R^2(L)$; rows marked $^{*}$ use $L=80$~km with the prescribed $\sigma_R^2$). Errors [\%] against tensor Gauss--Laguerre quadrature (confirmed by Bessel-$K$ quadrature to $10^{-8}\%$ and by Monte Carlo): \emph{mean} = delta method about $\mathbb E[\eta_{\rm tot}]$; 2nd, 3rd, 4th = Eq.~\eqref{eq:main} truncated after $\Theta^2$, $\Theta^3$, $\Theta^4$, expanded about the log-mean (``median) point; ``gain is the increase of $\mathbb E[R]$ from aperture averaging. The last two columns apply the \emph{log-normal} formula Eq.~\eqref{eq:ln} with the same Rytov variance to the Gamma--Gamma channel. Shape parameters use $(\sigma_R^2)^{6/5}$ (code since v2.2.0); with the report's $(\sigma_R^2)^{12/5}$ the 4th-order error stays $\le0.012\%$ (here $\le0.023\%$).}
+\label{tab:gg-single}
+\begin{tabular}{lccccccccc}
+\toprule
+L [km] & $\sigma_R^2$ & $\alpha/\beta$ & gain & mean & 2nd & 3rd & 4th & LN 2nd & LN 4th\\
+\midrule
+20 & $0.05$ & $43.17/161.63$ & $+0.129$ & $-0.002$ & $-0.001$ & $-0.006$ & $0.000$ & $-0.15$ & $-0.13$ \\
+50 & $0.26$ & $9.43/19.73$ & $+0.844$ & $-0.080$ & $-0.001$ & $-0.055$ & $+0.002$ & $-1.27$ & $-1.14$ \\
+80 & $0.61$ & $5.34/8.26$ & $+1.828$ & $-0.370$ & $+0.021$ & $-0.121$ & $+0.006$ & $-4.07$ & $-3.70$ \\
+100 & $0.92$ & $4.50/5.97$ & $+2.532$ & $-0.627$ & $+0.040$ & $-0.171$ & $+0.010$ & $-7.21$ & $-6.54$ \\
+120 & $1.29$ & $4.14/4.84$ & $+3.246$ & $-0.865$ & $+0.057$ & $-0.221$ & $+0.014$ & $-11.45$ & $-10.30$ \\
+160 & $2.19$ & $4.00/3.88$ & $+4.696$ & $-1.197$ & $+0.084$ & $-0.311$ & $+0.023$ & $-23.38$ & $-20.51$ \\
+80$^{*}$ & $3.00$ & $4.12/6.34$ & $+6.652$ & $-0.634$ & $+0.037$ & $-0.211$ & $+0.014$ & $-32.49$ & $-28.25$ \\
+80$^{*}$ & $5.00$ & $4.58/7.95$ & $+8.457$ & $-0.454$ & $+0.032$ & $-0.154$ & $+0.009$ & $-52.61$ & $-45.99$ \\
+
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\linewidth}\footnotesize At $L=20$~km the progress report prints $+0.36\%$ in all formula columns; with three independent references the errors here are $|\cdot|\le0.006\%$ (formula-independent offset in the report, see Sec.~\ref{sec:notes}).\end{minipage}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Choice of expansion point for the Gamma--Gamma formula (single channel as in Table~\ref{tab:gg-single}): error [\%] of $\mathbb E[R]$ when Eq.~\eqref{eq:main} (2nd and 4th order) is centred at the log-mean (``median), at the mean, or at the mode of $\eta$. The log-mean point is best in every row.}
+\label{tab:expoint}
+\begin{tabular}{lccccccc}
+\toprule
+L [km] & $\sigma_R^2$ & log-mean 2nd & log-mean 4th & mean 2nd & mean 4th & mode 2nd & mode 4th\\
+\midrule
+20 & $0.05$ & $-0.0013$ & $0.0000$ & $+0.0097$ & $+0.0002$ & $-0.0159$ & $-0.0001$ \\
+50 & $0.26$ & $-0.0006$ & $+0.0017$ & $+0.1447$ & $+0.0060$ & $-0.2098$ & $-0.0040$ \\
+80 & $0.61$ & $+0.0214$ & $+0.0060$ & $+0.4350$ & $+0.0213$ & $-0.6146$ & $-0.0147$ \\
+100 & $0.92$ & $+0.0404$ & $+0.0100$ & $+0.6757$ & $+0.0351$ & $-0.9711$ & $-0.0250$ \\
+120 & $1.29$ & $+0.0575$ & $+0.0144$ & $+0.9093$ & $+0.0503$ & $-1.3319$ & $-0.0369$ \\
+160 & $2.19$ & $+0.0843$ & $+0.0225$ & $+1.3026$ & $+0.0785$ & $-1.9453$ & $-0.0592$ \\
+80$^{*}$ & $3.00$ & $+0.0368$ & $+0.0139$ & $+0.7607$ & $+0.0507$ & $-1.0956$ & $-0.0351$ \\
+80$^{*}$ & $5.00$ & $+0.0318$ & $+0.0090$ & $+0.5563$ & $+0.0313$ & $-0.7730$ & $-0.0206$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{Analytic approximations and their errors for the per-arm Gamma--Gamma channel, \textbf{weak class} $C_n^2=10^{-17}$, with and without beam wander. Error [\%] of $\mathbb E[e_X]$, $\mathbb E[e_Z]$, $\mathbb E[R]$ relative to an exact reference (convolution of the two arms' Bessel-$K$ log-densities, $6001$ points; density norm and $\mathbb E[I_{\rm tot}]$ equal $1$ to $10^{-11}$). \emph{mean}: delta method about $\bar\eta=\mathbb E[\eta]$ in $\eta$-space (as manuscript Tables IV--VI); \emph{2nd}, \emph{4th}: Eq.~\eqref{eq:main} about $\eta_m=\eta_0f_{\rm bb}e^{c_1}$ truncated after $\Theta^2$ and $\Theta^4$, with $c_n=2^{1-n}\kappa_n(\alpha,\beta)$ at $\sigma_R^2(L/2)$ (plane wave, no aperture). $c_2=\mathrm{Var}(X)$. Beam wander only shifts $\eta_0$ ($f_{\rm bb}^2$ is the end-to-end factor); the repository does not contain this analytic-with-BB comparison, it is computed here from the repository functions.}
+\label{tab:perarm-weak}
+\begin{tabular}{rcccccccccccc}
+\toprule
+$L$ & $\sigma_R^2(L/2)$ & $c_2$ & $f_{\rm bb}^2$ & \multicolumn{3}{c}{$e_X$} & \multicolumn{3}{c}{$e_Z$} & \multicolumn{3}{c}{$R$}\\
+\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+ & & & & mean & 2nd & 4th & mean & 2nd & 4th & mean & 2nd & 4th\\
+\midrule
+\multicolumn{13}{l}{\emph{without beam wander (GG)}} \\
+20 & $0.0136$ & $0.007$ & -- & $0.0000$ & $0.0000$ & $0.0000$ & $+0.0001$ & $+0.0002$ & $0.0000$ & $-0.0008$ & $-0.0037$ & $0.0000$ \\
+50 & $0.0728$ & $0.036$ & -- & $0.0000$ & $0.0000$ & $0.0000$ & $-0.0001$ & $+0.0005$ & $0.0000$ & $-0.0008$ & $-0.024$ & $0.0000$ \\
+80 & $0.172$ & $0.084$ & -- & $-0.0006$ & $-0.0002$ & $0.0000$ & $-0.0013$ & $+0.0001$ & $0.0000$ & $+0.0008$ & $-0.052$ & $+0.0012$ \\
+100 & $0.259$ & $0.123$ & -- & $-0.0031$ & $-0.0013$ & $-0.0001$ & $-0.0045$ & $-0.0014$ & $-0.0001$ & $+0.0035$ & $-0.083$ & $+0.0039$ \\
+120 & $0.362$ & $0.166$ & -- & $-0.013$ & $-0.0056$ & $-0.0003$ & $-0.013$ & $-0.0054$ & $-0.0002$ & $+0.010$ & $-0.132$ & $+0.0099$ \\
+160 & $0.614$ & $0.258$ & -- & $-0.139$ & $-0.063$ & $-0.0048$ & $-0.082$ & $-0.035$ & $-0.0014$ & $+0.055$ & $-0.300$ & $+0.042$ \\
+\midrule
+\multicolumn{13}{l}{\emph{with beam wander (GG+BB, $\eta_0\to\eta_0f_{\rm bb}$)}} \\
+20 & $0.0136$ & $0.007$ & $0.999$ & $0.0000$ & $0.0000$ & $0.0000$ & $+0.0001$ & $+0.0002$ & $0.0000$ & $-0.0008$ & $-0.0037$ & $0.0000$ \\
+50 & $0.0728$ & $0.036$ & $0.981$ & $0.0000$ & $0.0000$ & $0.0000$ & $-0.0001$ & $+0.0005$ & $0.0000$ & $-0.0008$ & $-0.024$ & $0.0000$ \\
+80 & $0.172$ & $0.084$ & $0.959$ & $-0.0006$ & $-0.0002$ & $0.0000$ & $-0.0013$ & $+0.0001$ & $0.0000$ & $+0.0008$ & $-0.052$ & $+0.0012$ \\
+100 & $0.259$ & $0.123$ & $0.944$ & $-0.0032$ & $-0.0013$ & $-0.0001$ & $-0.0046$ & $-0.0015$ & $-0.0001$ & $+0.0036$ & $-0.083$ & $+0.0039$ \\
+120 & $0.362$ & $0.166$ & $0.928$ & $-0.013$ & $-0.0059$ & $-0.0003$ & $-0.014$ & $-0.0056$ & $-0.0002$ & $+0.010$ & $-0.131$ & $+0.0100$ \\
+160 & $0.614$ & $0.258$ & $0.898$ & $-0.146$ & $-0.066$ & $-0.0050$ & $-0.084$ & $-0.036$ & $-0.0014$ & $+0.057$ & $-0.302$ & $+0.042$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{As Table~\ref{tab:perarm-weak} for the \textbf{moderate class} $C_n^2=10^{-15}$ ($\sigma_R^2(L/2)=1.4$--$61$, $\beta\to1$, $c_2=O(1)$). There is no small parameter: the 4th-order formula is no longer better than the 2nd, and with beam wander at $L=160$~km ($f_{\rm bb}^2=4.5\times10^{-3}$, operating point below the key-rate cut-off) every formula fails.}
+\label{tab:perarm-mod}
+\begin{tabular}{rcccccccccccc}
+\toprule
+$L$ & $\sigma_R^2(L/2)$ & $c_2$ & $f_{\rm bb}^2$ & \multicolumn{3}{c}{$e_X$} & \multicolumn{3}{c}{$e_Z$} & \multicolumn{3}{c}{$R$}\\
+\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+ & & & & mean & 2nd & 4th & mean & 2nd & 4th & mean & 2nd & 4th\\
+\midrule
+\multicolumn{13}{l}{\emph{without beam wander (GG)}} \\
+20 & $1.36$ & $0.441$ & -- & $-0.100$ & $-0.091$ & $-0.102$ & $-2.56$ & $-2.34$ & $-2.65$ & $+11.49$ & $+4.93$ & $+12.56$ \\
+50 & $7.28$ & $0.781$ & -- & $-0.029$ & $-0.014$ & $-0.011$ & $-0.145$ & $-0.011$ & $-0.122$ & $-0.133$ & $-3.59$ & $+2.06$ \\
+80 & $17.2$ & $0.842$ & -- & $-0.152$ & $-0.089$ & $-0.033$ & $-0.369$ & $-0.122$ & $-0.054$ & $+0.035$ & $-1.00$ & $+2.20$ \\
+100 & $25.9$ & $0.853$ & -- & $-0.371$ & $-0.217$ & $-0.077$ & $-0.608$ & $-0.209$ & $-0.049$ & $+0.067$ & $-0.403$ & $+2.23$ \\
+120 & $36.2$ & $0.857$ & -- & $-0.817$ & $-0.473$ & $-0.162$ & $-0.949$ & $-0.333$ & $-0.061$ & $+0.101$ & $-0.114$ & $+2.30$ \\
+160 & $61.4$ & $0.857$ & -- & $-3.10$ & $-1.71$ & $-0.481$ & $-2.02$ & $-0.698$ & $-0.064$ & $+0.191$ & $+0.113$ & $+2.62$ \\
+\midrule
+\multicolumn{13}{l}{\emph{with beam wander (GG+BB, $\eta_0\to\eta_0f_{\rm bb}$)}} \\
+20 & $1.36$ & $0.441$ & $0.758$ & $-0.055$ & $-0.047$ & $-0.056$ & $-1.32$ & $-1.13$ & $-1.38$ & $+6.75$ & $+1.18$ & $+7.57$ \\
+50 & $7.28$ & $0.781$ & $0.085$ & $-0.099$ & $-0.056$ & $-0.019$ & $-0.258$ & $-0.078$ & $-0.043$ & $+0.029$ & $-1.46$ & $+1.60$ \\
+80 & $17.2$ & $0.842$ & $0.025$ & $-0.920$ & $-0.528$ & $-0.172$ & $-0.961$ & $-0.345$ & $-0.059$ & $+0.127$ & $-0.383$ & $+2.06$ \\
+100 & $25.9$ & $0.853$ & $0.014$ & $-2.67$ & $-1.49$ & $-0.422$ & $-1.79$ & $-0.637$ & $-0.069$ & $+0.215$ & $-0.202$ & $+2.39$ \\
+120 & $36.2$ & $0.857$ & $0.009$ & $-5.94$ & $-3.07$ & $-0.585$ & $-2.79$ & $-0.868$ & $+0.097$ & $+0.150$ & $-0.377$ & $+2.74$ \\
+160 & $61.4$ & $0.857$ & $0.005$ & $-11.87$ & $-3.70$ & $+1.58$ & $-2.20$ & $+1.56$ & $+2.78$ & $-48.82$ & $-51.31$ & $-41.41$ \\
+
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\linewidth}\footnotesize The reference is the unclipped Gamma--Gamma product; the repository engine caps each arm at $\eta\le1$, which lowers $\mathbb E[R]$ by $9.4\%$ at $L=20$~km (arm nominal $0.56$), $\le0.53\%$ at $L=50$ and $\le0.07\%$ for $L\ge80$~km; the large $L=20$~km errors of the 4th order are therefore a property of the expansion, not of this cap.\end{minipage}
+\end{table}
+
+\Needspace{8\baselineskip}\paragraph{Reading the tables.}
+\begin{enumerate}
+\item \emph{Single channel with aperture (Table~\ref{tab:gg-single}).} For $\sigma_R^2(L)$ between $0.05$ and $5$ the 4th-order median formula is within $0.023\%$ of quadrature, the 2nd order within $0.084\%$, the 3rd order within $0.31\%$ and the delta method within $1.2\%$; the log-normal formula applied to the same channel errs by $-1.3\%$ at $\sigma_R^2=0.26$ and $-52.6\%$ at $5$. The 3rd order is worse than the 2nd (Sec.~\ref{sec:order}). The median (log-mean) point beats the mean and the mode in every row (Table~\ref{tab:expoint}).
+\item \emph{Per arm, weak class, with and without beam wander (Table~\ref{tab:perarm-weak}).} For $\sigma_R^2(L/2)\le0.61$ the 4th-order median error is $\le0.005\%$ for $e_X$, $\le0.0014\%$ for $e_Z$ and $\le0.042\%$ for $R$ ($L=160$~km); mean and 2nd order give $-0.14\%/-0.066\%$ ($e_X$), $-0.082\%/-0.036\%$ ($e_Z$) and $+0.055\%/-0.30\%$ ($R$). Beam wander changes these errors by less than $0.01$ percentage points, because it only shifts $\eta_0\to\eta_0f_{\rm bb}$ ($f_{\rm bb}^2\ge0.90$). For $R$ the delta method is competitive with the 4th order (see the power-law remark in Sec.~\ref{sec:fail}); for $e_X$ and $e_Z$ the 4th order is one to two orders better.
+\item \emph{Per arm, moderate class (Table~\ref{tab:perarm-mod}).} With $\beta\to1$ the log-variance $c_2$ is $O(1)$ and the expansion is no longer controlled: the 4th order errs by $+12.6\%$ at $20$~km and $+2.0$ to $+2.7\%$ for $L=50$--$160$~km, better than the 2nd order only at $50$~km and worse for $L\ge80$~km; with beam wander at $160$~km ($f_{\rm bb}^2=4.5\times10^{-3}$) the expansion point lies below the key-rate cut-off and all approximations fail ($-41\%$ to $-51\%$ for $R$). The formula is therefore reliable for $c_2\lesssim0.3$ (weak class and aperture-averaged channels), not in saturated moderate/strong turbulence.
+\end{enumerate}
+%% ===================================================================
+\section{Derivation: from the Gamma--Gamma channel to the cumulant--Euler formula}
+\label{sec:derivation}
+
+\subsection{Channel model and the quantity to be averaged}
+
+Let Charlie sit midway, so that each arm has length $L/2$. Writing $\bar\eta_{A},\bar\eta_{B}$ for the (deterministic) arm transmittances and $I_A,I_B$ for the independent, unit-mean fading factors,
+\begin{equation}
+  \eta_A=\bar\eta_A I_A,\qquad \eta_B=\bar\eta_B I_B,\qquad
+  \eta\equiv\sqrt{\eta_A\eta_B}=\eta_0\,e^{X},\qquad
+  X=\tfrac12(\ln I_A+\ln I_B),\qquad \eta_0=\sqrt{\bar\eta_A\bar\eta_B}.
+  \label{eq:model}
+\end{equation}
+Here $\eta_0=\sqrt{\eta_{\rm FSO}(L)}$ for the deterministic link $\eta_{\rm FSO}=\eta_{\rm atm}(L)\,\eta_{\rm geo}(L/2)^2$, and $\eta_0=\sqrt{\eta_{\rm FSO}}\,f_{\rm bb}$ when turbulence-induced beam broadening (beam wander) is included (Sec.~\ref{sec:bb}). The progress-report variant uses one cumulative channel $\eta_{\rm tot}=\eta_{\rm FSO}\,I$, i.e.\ $X=\tfrac12\ln I$ and $\eta_0=\sqrt{\eta_{\rm FSO}}$.
+Every key-rate quantity $Q\in\{p_{XX},e_X,e_Z,R\}$ is a smooth function $Q(\eta)$ of the effective transmittance, and the turbulence-averaged value is
+\begin{equation}
+  \mathbb E[Q]=\int_{-\infty}^{\infty}Q\!\left(\eta_0e^{x}\right)p_X(x)\,dx .
+  \label{eq:avg}
+\end{equation}
+Energy neutrality, $\mathbb E[I]=1$ for each factor, gives $\mathbb E[e^{2X}]=1$, i.e.\ $\mathbb E[\eta_{\rm tot}]=\eta_0^2$.
+
+\subsection{Gamma--Gamma statistics and the cumulants of $\ln I$}
+\label{sec:ggstats}
+
+\paragraph{Product of two Gamma variables.}
+Let $I=X_aX_b$ with $X_a\sim\Gamma(\alpha,\text{rate }\alpha)$ and $X_b\sim\Gamma(\beta,\text{rate }\beta)$ independent, so both have unit mean. For $X\sim\Gamma(k,\text{rate }k)$ the Mellin transform is
+$\mathbb E[X^{s}]=\Gamma(k+s)/(\Gamma(k)k^{s})$ for $s>-k$. By independence
+\begin{equation}
+  \mathbb E[I^{s}]=\frac{\Gamma(\alpha+s)\,\Gamma(\beta+s)}{\Gamma(\alpha)\Gamma(\beta)\,(\alpha\beta)^{s}} .
+  \label{eq:mellin}
+\end{equation}
+Mellin inversion gives the familiar density
+$p_I(I)=\dfrac{2(\alpha\beta)^{(\alpha+\beta)/2}}{\Gamma(\alpha)\Gamma(\beta)}I^{(\alpha+\beta)/2-1}K_{\alpha-\beta}\!\big(2\sqrt{\alpha\beta I}\big)$
+(used in the code as the Bessel-$K$ reference), and \eqref{eq:mellin} gives $\mathbb E[I]=1$, $\mathbb E[I^2]=(1+\tfrac1\alpha)(1+\tfrac1\beta)$, hence the scintillation index
+\begin{equation}
+  \mathrm{SI}=\frac1\alpha+\frac1\beta+\frac1{\alpha\beta}.
+\end{equation}
+
+\paragraph{Cumulants of $Y=\ln I$.}
+Since $\mathbb E[e^{sY}]=\mathbb E[I^s]$, \eqref{eq:mellin} is the moment generating function of $Y$, and its logarithm is the cumulant generating function
+\begin{equation}
+  K_Y(s)=\ln\Gamma(\alpha+s)+\ln\Gamma(\beta+s)-\ln\Gamma(\alpha)-\ln\Gamma(\beta)-s\ln(\alpha\beta),
+  \qquad s>-\min(\alpha,\beta).
+\end{equation}
+Differentiating at $s=0$ with $\psi^{(m)}$ the polygamma functions,
+\begin{equation}
+  \boxed{\;\kappa_1=\psi(\alpha)+\psi(\beta)-\ln(\alpha\beta),\qquad
+  \kappa_n=\psi^{(n-1)}(\alpha)+\psi^{(n-1)}(\beta)\quad(n\ge2).\;}
+  \label{eq:kappa}
+\end{equation}
+Energy neutrality is the identity $K_Y(1)=\ln\alpha+\ln\beta-\ln(\alpha\beta)=0$. The signs are fixed by $\psi'>0$, $\psi''<0$, $\psi'''>0$: $\kappa_2>0$, $\kappa_3<0$ (left-skewed log-irradiance, deep fades), $\kappa_4>0$. For large shapes, $\psi'(k)\simeq1/k$, $\psi''(k)\simeq-1/k^2$, $\psi'''(k)\simeq2/k^3$, so $\kappa_3,\kappa_4$ are of higher order in $\varepsilon\sim1/\alpha+1/\beta$ than $\kappa_2$ (Sec.~\ref{sec:order}). The code checks \eqref{eq:kappa} against direct numerical integration to $\le3\times10^{-13}$ (test G0).
+
+\paragraph{Shape parameters.}
+As implemented in \texttt{averaging.gg\_params} and \texttt{turbulence/gamma\_gamma.py} (plane wave, $\sigma_R^2=1.23\,C_n^2k^{7/6}L^{11/6}$, $d^2=kD^2/4L$):
+\begin{align}
+  \alpha&=\Big[\exp\!\Big(\tfrac{0.49\,\sigma_R^2}{(1+1.11\,\sigma_R^{12/5})^{7/6}}\Big)-1\Big]^{-1},\\
+  \beta&=\Big[\exp\!\Big(\tfrac{0.51\,\sigma_R^2\,(1+0.69\,\sigma_R^{12/5})^{-5/6}}{(1+0.9d^2+0.62\,d^2\sigma_R^{12/5})^{5/6}}\Big)-1\Big]^{-1}.
+\end{align}
+The symbol $\sigma_R^{12/5}$ here means $(\sigma_R^2)^{6/5}$ ($\sigma_R$ is the Rytov \emph{standard deviation}). The progress report evaluates $(\sigma_R^2)^{12/5}$; the repository code uses $(\sigma_R^2)^{6/5}$ since v2.2.0 (see Sec.~\ref{sec:notes}). The per-arm model of the repository uses $d=0$ (no aperture averaging) and $\sigma_R^2(L/2)$; the progress-report tables use $\sigma_R^2(L)$ and $D=0.30$~m. Aperture averaging enlarges $\beta$, which keeps the log-cumulants small and is what makes the expansion below accurate in the report's Table~1.
+
+\subsection{Expansion in the log-transmittance}
+
+\begin{lemma}[derivatives with respect to $x=\ln\eta$]\label{lem:theta}
+Let $\Theta=\eta\,\dfrac{d}{d\eta}$ (Euler operator) and $F(x)=Q(\eta_0e^{x})$. Then $F^{(n)}(x)=(\Theta^nQ)(\eta_0e^{x})$ for all $n\ge0$.
+\end{lemma}
+\begin{proof}
+$F'(x)=\eta_0e^{x}Q'(\eta_0e^{x})=(\Theta Q)(\eta_0e^{x})$; apply the same step to $\Theta Q$ and iterate.
+\end{proof}
+
+\begin{lemma}[Euler--Stirling form]\label{lem:stirling}
+$\Theta^n=\sum_{k=1}^{n}S(n,k)\,\eta^{k}\partial_\eta^{k}$, with $S(n,k)$ the Stirling numbers of the second kind.
+\end{lemma}
+\begin{proof}
+True for $n=1$. For the induction step use $\Theta(\eta^{k}\partial^{k}f)=\eta\partial(\eta^{k}\partial^{k}f)=k\,\eta^{k}\partial^{k}f+\eta^{k+1}\partial^{k+1}f$. The coefficient of $\eta^{k}\partial^{k}$ in $\Theta^{n+1}$ is therefore $kS(n,k)+S(n,k-1)=S(n+1,k)$.
+\end{proof}
+Explicitly,
+\begin{align}
+  \Theta^2&=\eta^2\partial^2+\eta\partial, &
+  \Theta^3&=\eta^3\partial^3+3\eta^2\partial^2+\eta\partial,\\
+  \Theta^4&=\eta^4\partial^4+6\eta^3\partial^3+7\eta^2\partial^2+\eta\partial. & &
+\end{align}
+(The code evaluates $\Theta^nQ$ from the derivatives $Q^{(k)}$, $k\le4$, with these weights; \texttt{averaging.theta\_ops}. Test T2 confirms $\Theta^n\eta^m=m^n\eta^m$ to $10^{-13}$.)
+
+\begin{theorem}[cumulant--Euler expansion]\label{thm:main}
+Let $c_n$ be the cumulants of $X=\ln(\eta/\eta_0)$, $\eta_m=\eta_0e^{c_1}$ the log-mean point, and $\mu_4=c_4+3c_2^2$. Then
+\begin{equation}
+  \boxed{\;
+  \mathbb E[Q]\;\simeq\;Q(\eta_m)+\frac{c_2}{2}\,\Theta^2Q+\frac{c_3}{6}\,\Theta^3Q+\frac{c_4+3c_2^{2}}{24}\,\Theta^4Q\Big|_{\eta=\eta_m},\qquad \eta_m=\eta_0e^{c_1}.\;}
+  \label{eq:main}
+\end{equation}
+The first neglected terms are $\frac{\mu_5}{120}\Theta^5Q+\frac{\mu_6}{720}\Theta^6Q$ with $\mu_5=c_5+10c_2c_3$ and $\mu_6=c_6+15c_2c_4+10c_3^2+15c_2^3$.
+\end{theorem}
+\begin{proof}
+Expand $F$ of Lemma~\ref{lem:theta} about $x=c_1$,
+$F(x)=\sum_{n=0}^{4}\frac{F^{(n)}(c_1)}{n!}(x-c_1)^n+r_5(x)$, and take the expectation. The central moments $\mu_n=\mathbb E[(X-c_1)^n]$ follow from the moment--cumulant relations for the centred variable, whose cumulants are $(0,c_2,c_3,c_4,\dots)$: $\mu_1=0$, $\mu_2=c_2$, $\mu_3=c_3$, $\mu_4=c_4+3c_2^2$, $\mu_5=c_5+10c_2c_3$, $\mu_6=c_6+15c_2c_4+10c_3^2+15c_2^3$. With $F^{(n)}(c_1)=(\Theta^nQ)(\eta_m)$ this is \eqref{eq:main}; the stated neglected terms are the next two terms of the same series.
+\end{proof}
+
+\paragraph{Explicit form in ordinary derivatives.}
+Inserting Lemma~\ref{lem:stirling} into \eqref{eq:main} and collecting powers,
+\begin{equation}
+  \mathbb E[Q]\simeq Q+a_1\,\eta Q'+a_2\,\eta^2Q''+a_3\,\eta^3Q'''+a_4\,\eta^4Q^{(4)}\Big|_{\eta_m},
+\end{equation}
+\begin{equation}
+  a_1=\tfrac{c_2}{2}+\tfrac{c_3}{6}+\tfrac{\mu_4}{24},\quad
+  a_2=\tfrac{c_2}{2}+\tfrac{c_3}{2}+\tfrac{7\mu_4}{24},\quad
+  a_3=\tfrac{c_3}{6}+\tfrac{\mu_4}{4},\quad
+  a_4=\tfrac{\mu_4}{24}.
+\end{equation}
+
+\paragraph{Why the log-mean point.}
+Expanding about $x=c_1=\mathbb E[X]$ removes the first-order term exactly ($\mu_1=0$), so the leading correction is the variance term. For a log-normal channel $\eta_m$ is the median of $\eta$; for Gamma--Gamma it is the geometric mean $\exp(\mathbb E\ln\eta)$ (called ``median'' in the report). The alternative expansion points (mean, mode) are compared in Table~\ref{tab:expoint}.
+
+\subsection{Cumulants of $X$ for the channels used in the paper}
+\label{sec:cumX}
+
+\begin{proposition}\label{prop:cX}
+For the model \eqref{eq:model} with independent Gamma--Gamma arms of shapes $(\alpha_A,\beta_A)$ and $(\alpha_B,\beta_B)$,
+\begin{equation}
+  c_n=2^{-n}\big(\kappa_n(\alpha_A,\beta_A)+\kappa_n(\alpha_B,\beta_B)\big).
+\end{equation}
+For equal arms $c_n=2^{1-n}\kappa_n(\alpha,\beta)$; for the single cumulative channel $\eta_{\rm tot}=\eta_{\rm FSO}I$ one has $c_n=2^{-n}\kappa_n(\alpha,\beta)$.
+\end{proposition}
+\begin{proof}
+$K_X(s)=\ln\mathbb E[e^{sX}]=\ln\mathbb E[e^{(s/2)Y_A}]+\ln\mathbb E[e^{(s/2)Y_B}]=K_{Y_A}(s/2)+K_{Y_B}(s/2)$ by independence; the $n$-th derivative at $0$ carries the factor $2^{-n}$.
+\end{proof}
+In polygamma form (equal arms):
+\begin{equation}
+  c_1=\tfrac12\kappa_1,\quad c_2=\tfrac12\big[\psi'(\alpha)+\psi'(\beta)\big],\quad
+  c_3=\tfrac14\big[\psi''(\alpha)+\psi''(\beta)\big],\quad
+  c_4=\tfrac18\big[\psi'''(\alpha)+\psi'''(\beta)\big],
+\end{equation}
+and for the single channel $c_2=\tfrac14[\psi'(\alpha)+\psi'(\beta)]$, $c_3=\tfrac18[\psi''(\alpha)+\psi''(\beta)]$, $c_4=\tfrac1{16}[\psi'''(\alpha)+\psi'''(\beta)]$. Written in the variable $Y=\ln I$ of the progress report, \eqref{eq:main} reads $\mathbb E[Q]\simeq Q+\sum_{n=2}^{4}\frac{\mu^Y_n}{n!\,2^{n}}\Theta^nQ$ with $\mu^Y_2=\kappa_2$, $\mu^Y_3=\kappa_3$, $\mu^Y_4=\kappa_4+3\kappa_2^2$, which is exactly \texttt{averaging.gg\_expansion}. The two forms agree to machine precision in the code (max.\ relative difference $0$ at $L=50,100,160$~km).
+
+\subsection{Reduction to the log-normal formula}
+
+For a log-normal channel with energy neutrality ($\mathbb E[\eta_{\rm tot}]=\eta_0^2$) the log-transmittance is Gaussian, $X\sim\mathcal N(-\sigma_X^2,\sigma_X^2)$, so $c_1=-\sigma_X^2$, $c_2=\sigma_X^2$, $c_{n\ge3}=0$, $\mu_4=3\sigma_X^4$. For two arms, $\sigma_X^2=\sigma_R^2(L/2)/2$. Theorem~\ref{thm:main} then gives
+\begin{equation}
+  \mathbb E[Q]\simeq Q(\eta_{\rm med})+\frac{\sigma_X^2}{2}\,\Theta^2Q+\frac{\sigma_X^4}{8}\,\Theta^4Q,\qquad \eta_{\rm med}=\eta_0e^{-\sigma_X^2},
+  \label{eq:ln}
+\end{equation}
+which is the log-normal two-term / four-term formula of the manuscript (the $\Theta^3$ term vanishes with $c_3=0$ and $\tfrac{3\sigma_X^4}{24}=\tfrac{\sigma_X^4}{8}$). Setting $\kappa_3=\kappa_4=0$ in the Gamma--Gamma formula reproduces \eqref{eq:ln} to $10^{-12}$ (test G1). Moments of the log-normal channel: $\mathbb E[\eta^n]=\eta_0^n\exp\!\big[n(n-2)\sigma_X^2/2\big]$, and its skewness in $\eta$ is $\gamma_1=(e^{\sigma_X^2}+2)\sqrt{e^{\sigma_X^2}-1}$.
+
+\subsection{The delta method as the expansion about the mean}
+
+Expanding $Q$ about $\bar\eta=\mathbb E[\eta]$ in powers of $\eta-\bar\eta$ instead of $\ln\eta-c_1$ gives
+$\mathbb E[Q]\simeq Q(\bar\eta)+\tfrac12Q''(\bar\eta)\,\mathrm{Var}(\eta)$, with $\bar\eta=\eta_0e^{-\sigma_X^2/2}$, $\mathrm{Var}(\eta)=\eta_0^2(1-e^{-\sigma_X^2})$ in the log-normal case. The neglected third-order term is $\tfrac16Q'''(\bar\eta)\,\gamma_1\mathrm{Var}(\eta)^{3/2}$, which is not small once $\gamma_1$ is large (Table~\ref{tab:delta}: $\gamma_1=41$ at $\sigma_X^2=2.4$, error $+28.8\%$). In the variable $x=\ln\eta$ the log-normal law is symmetric, so odd terms vanish and the series is in powers of $\sigma_X^2$ only. Carrying out the same delta expansion in the total transmittance $\eta_{\rm tot}=\eta^2$ gives a different and worse result ($-20.1\%$ at $L=160$~km, Table~\ref{tab:delta}).
+
+\subsection{Order bookkeeping: which truncation is consistent}
+\label{sec:order}
+
+For large shapes put $\varepsilon\sim1/\alpha+1/\beta$. From \eqref{eq:kappa} and Proposition~\ref{prop:cX}: $c_2=O(\varepsilon)$, $c_3=O(\varepsilon^{2})$, $c_4=O(\varepsilon^{3})$, hence $\mu_4=3c_2^2+c_4=O(\varepsilon^{2})$, $\mu_5=O(\varepsilon^{3})$, $\mu_6=O(\varepsilon^{3})$. The terms of \eqref{eq:main} are therefore
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+term & $c_2\Theta^2/2$ & $c_3\Theta^3/6$ \;and\; $\tfrac{c_2^2}{8}\Theta^4$ \\
+order & $\varepsilon$ & $\varepsilon^{2}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+and the neglected terms are $O(\varepsilon^{3})$. Thus (i) the ``2nd-order'' formula is correct to $O(\varepsilon)$; (ii) the ``4th-order'' formula \eqref{eq:main} is the complete $O(\varepsilon^{2})$ approximation; (iii) the ``3rd-order'' truncation keeps only one of the two $O(\varepsilon^{2})$ terms ($c_3\Theta^3$ but not $\tfrac{c_2^2}{8}\Theta^4$) and need not improve on the 2nd order. This is the pattern in Table~\ref{tab:gg-single}: the 3rd-order column is worse than the 2nd-order one, and the 4th-order column is best. The series is asymptotic, not convergent: when no small parameter exists (e.g.\ $\beta\to1$ in saturation, $c_2=O(1)$), adding terms does not help; see the moderate-turbulence rows of Table~\ref{tab:perarm-mod}.
+
+\subsection{Beam wander / beam broadening}
+\label{sec:bb}
+
+In the repository, turbulence-induced long-term beam broadening (which contains beam wander) acts per arm as a deterministic loss on the nominal transmittance,
+\begin{equation}
+  W_{\rm LT}^2=W^2\big(1+1.63\,\sigma_R^{12/5}\Lambda\big),\quad \Lambda=\frac{2z}{kW^2},\qquad
+  f_{\rm bb}=\frac{1-e^{-2a^2/W_{\rm LT}^2}}{1-e^{-2a^2/W^2}}\le1,
+\end{equation}
+with $z=L/2$, $W=w(z)$ the free-space beam radius, $a$ the receiver radius and $\sigma_R^{12/5}=(\sigma_R^2)^{6/5}$ per arm. The fading statistics are left unchanged ($\alpha,\beta$ keep their plane-wave values), so in \eqref{eq:model} only $\eta_0$ changes:
+\begin{equation}
+  \eta_0\;\longrightarrow\;\eta_0\,f_{\rm bb}(L/2),\qquad c_n\;\text{unchanged}.
+\end{equation}
+Theorem~\ref{thm:main} therefore applies verbatim with the shifted log-mean point $\eta_m=\eta_0f_{\rm bb}\,e^{c_1}$. The derivatives $\Theta^nQ$ must be re-evaluated at the shifted point; they are not rescaled, because $Q(\eta)$ is not a power law. The shift moves the operating point down the key-rate curve towards the cut-off, which is why the expansion deteriorates when $f_{\rm bb}^2$ becomes small (Table~\ref{tab:perarm-mod}, $L=160$~km).
+
+\subsection{Derivatives of the key rate}
+\label{sec:deriv}
+
+Equation \eqref{eq:main} needs $Q^{(k)}(\eta)$, $k\le4$, for $Q=e_X,e_Z,R$ (and $p_{XX}$). With $\gamma=\alpha^2\eta$, $\Omega=\cos\varphi\cos\theta$, $A=1-p_d$ the functions are those of the code (\texttt{legacy\_baseline.py}); all $\eta$-derivatives below carry a factor $\alpha^{2n}$ from $\partial_\eta=\alpha^2\partial_\gamma$.
+\begin{align}
+  p_{XX}&=\tfrac A2\big[e^{-(1-\Omega)\gamma}+e^{-(1+\Omega)\gamma}\big]-A^2e^{-2\gamma},\\
+  p_{XX}^{(n)}&=\alpha^{2n}\Big\{\tfrac A2\big[(-(1-\Omega))^{n}e^{-(1-\Omega)\gamma}+(-(1+\Omega))^{n}e^{-(1+\Omega)\gamma}\big]-A^2(-2)^{n}e^{-2\gamma}\Big\},\\
+  e_X&=\frac{\mathcal N}{\mathcal D},\quad \mathcal N=e^{-\Omega\gamma}-Ae^{-\gamma},\quad \mathcal D=e^{-\Omega\gamma}+e^{\Omega\gamma}-2Ae^{-\gamma},\\
+  e_X^{(n)}&=\alpha^{2n}\,\frac{\mathcal N_\gamma^{(n)}-\sum_{k=1}^{n}\binom nk\mathcal D_\gamma^{(k)}\,e_{X,\gamma}^{(n-k)}}{\mathcal D},
+\end{align}
+where $\mathcal N_\gamma^{(n)}=(-\Omega)^ne^{-\Omega\gamma}-A(-1)^ne^{-\gamma}$, $\mathcal D_\gamma^{(n)}=(-\Omega)^ne^{-\Omega\gamma}+\Omega^ne^{\Omega\gamma}-2A(-1)^ne^{-\gamma}$ (derivatives in $\gamma$; the recursion is for $\gamma$-derivatives, multiplied by $\alpha^{2n}$ at the end). The phase-error bound is
+\begin{align}
+  p_{ZZ}^{(n_A,n_B)}(\eta)&=A\Big[p_d(1-\eta)^{N}+\sum_{k,l}C^{(n_A,n_B)}_{kl}\,\eta^{k+l}(1-\eta)^{N-k-l}-(1-\eta)^{N}\Big],\quad N=n_A+n_B,\\
+  S_j&=\sum_{\substack{m_A,m_B\\ n_A+n_B\le N_{\max}}}c^{(j)}_{m_A}c^{(j)}_{m_B}\sqrt{p_{ZZ}^{(2m_A+j,\,2m_B+j)}},\qquad
+  c^{(j)}_{m}=\frac{e^{-\alpha^2/2}\alpha^{n}}{\sqrt{n!}}\Big|_{n=2m+j},\\
+  e_Z&=\frac{\sum_{j=0,1}(S_j+D_j)^2}{p_{XX}},
+\end{align}
+with $C_{kl}$ the coefficients of CAL Eq.~(35) and $D_j=\big(\sum_{m\ge0}c^{(j)}_m\big)^2-\big(\sum_{m\le m_{\max}}c^{(j)}_m\big)^2$ the truncation residual, which does \emph{not} depend on $\eta$ (so $D_j^{(n)}=0$, $n\ge1$). The key rate is
+\begin{equation}
+  R=2\,p_{XX}\,K,\qquad K=1-h(e_X)-h(e_Z),\qquad h(x)=-x\log_2x-(1-x)\log_2(1-x).
+\end{equation}
+The derivatives are assembled with standard rules:
+\begin{itemize}
+\item $\partial^n[\eta^a(1-\eta)^b]=\sum_{i=0}^{n}\binom ni a^{\underline i}\eta^{a-i}(-1)^{n-i}b^{\underline{n-i}}(1-\eta)^{b-n+i}$ (falling factorials) for $p_{ZZ}$;
+\item for $\sqrt p$, with $p_k=p^{(k)}$ and $s=\sqrt{p_0}$:
+$(\sqrt p)'=\tfrac{p_1}{2s}$,\;
+$(\sqrt p)''=\tfrac{p_2}{2s}-\tfrac{p_1^2}{4p_0^{3/2}}$,\;
+$(\sqrt p)'''=\tfrac{p_3}{2s}-\tfrac{3p_1p_2}{4p_0^{3/2}}+\tfrac{3p_1^3}{8p_0^{5/2}}$,\;
+$(\sqrt p)^{(4)}=\tfrac{p_4}{2s}-\tfrac{4p_1p_3+3p_2^2}{4p_0^{3/2}}+\tfrac{9p_1^2p_2}{4p_0^{5/2}}-\tfrac{15p_1^4}{16p_0^{7/2}}$;
+\item quotient $q=u/v$: $q^{(n)}=\big[u^{(n)}-\sum_{k=1}^{n}\binom nk v^{(k)}q^{(n-k)}\big]/v$ (for $e_Z=U/p_{XX}$);
+\item entropy: $h'=\log_2\frac{1-x}{x}$, $h''=-\frac{1}{x(1-x)\ln2}$, $h'''=\frac1{\ln2}\big(\frac1{x^2}-\frac1{(1-x)^2}\big)$, $h^{(4)}=-\frac2{\ln2}\big(\frac1{x^3}+\frac1{(1-x)^3}\big)$;
+\item composition (Fa\`a di Bruno, $n\le4$): $(f\!\circ\! g)'=f'g'$, $(f\!\circ\! g)''=f'g''+f''g'^2$, $(f\!\circ\! g)'''=f'g'''+3f''g'g''+f'''g'^3$, $(f\!\circ\! g)^{(4)}=f'g^{(4)}+f''(4g'g'''+3g''^2)+6f'''g'^2g''+f^{(4)}g'^4$;
+\item Leibniz for the products $p_{XX}K$ and $T_j^2$.
+\end{itemize}
+These formulas hold on the smooth branch $p_{XX}>0$, $0<e_X,e_Z<\tfrac12$, $R>0$ (no clipping active), which is why an expansion centred below the key-rate cut-off is not meaningful.
+The analytic derivatives agree with an independent 60-digit \texttt{mpmath} implementation to at most $1.0\times10^{-9}$ (all orders $0$--$4$, $L=20$--$160$~km; test T1), and the $x$-space (Hermite) and $\eta$-space (Euler--Stirling) routes agree to $3.4\times10^{-9}$ over $78$ cross-checks (test T3).
+
+\subsection{Summary of the chain}
+\[
+\underbrace{I=X_aX_b}_{\text{Gamma--Gamma}}
+\;\xrightarrow{\ \eqref{eq:mellin}\ }\;
+\underbrace{K_Y(s)}_{\text{log-CGF}}
+\;\xrightarrow{\ \eqref{eq:kappa}\ }\;
+\kappa_n
+\;\xrightarrow{\ \text{Prop.~\ref{prop:cX}}\ }\;
+c_n
+\;\xrightarrow{\ \text{Lemmas~\ref{lem:theta},\ref{lem:stirling}, Thm.~\ref{thm:main}}\ }\;
+\mathbb E[Q]\simeq Q(\eta_m)+\tfrac{c_2}{2}\Theta^2Q+\tfrac{c_3}{6}\Theta^3Q+\tfrac{c_4+3c_2^2}{24}\Theta^4Q ,
+\]
+and, with $\kappa_3=\kappa_4=0$ (Gaussian $X$), to the log-normal formula \eqref{eq:ln}.
+
+\section{Notes on the sources, and reproducibility}
+\label{sec:notes}
+\paragraph{Discrepancies found while reproducing the printed numbers.}
+\begin{enumerate}
+\item \emph{Gamma--Gamma exponent.} The progress report's Gamma--Gamma figures and tables are reproduced only with $\sigma_R^{12/5}$ evaluated as $(\sigma_R^2)^{12/5}$ (scintillation index peak $0.71$, falling to $\approx0.08$ at $\sigma_R^2=10$). In Andrews--Phillips $\sigma_R$ is the Rytov standard deviation, i.e.\ the exponent is $6/5$ on the variance; then $\mathrm{SI}$ peaks at $\approx1.2$--$1.3$ near $\sigma_R^2=5$--$10$ and saturates towards $1$. The repository code has used the correct exponent since v2.2.0. The cumulant formulas and the accuracy of the 4th-order formula are unaffected (Table~\ref{tab:gg-single}), but 26 of the 40 printed Table~1 entries differ by more than $0.25$ percentage points under the correct exponent, concentrated in the aperture-gain and delta-method columns at $\sigma_R^2>1$.
+\item \emph{$L=20$~km row of the progress report.} It prints $+0.36\%$ in the delta, 2nd, 3rd and 4th-order columns; a formula-independent offset points to the reference integral at very large shapes ($\alpha,\beta\approx43,162$), not to the expansion.
+\item \emph{Manuscript, Eq.~(6)/Appendix~A.} The $A^2$ term of $p_{XX}$ sits outside the factor $\tfrac12$: $p_{XX}=\tfrac A2[e^{-(1-\Omega)\gamma}+e^{-(1+\Omega)\gamma}]-A^2e^{-2\gamma}$ (as in CAL Eq.~(30) and the code). The printed bracket gives $p_{XX}=0.5$ instead of $1.57\times10^{-3}$ at $L=80$~km.
+\item \emph{Appendix~E.} $D_j$ does not depend on $\eta$ in CAL and in the code, so $D_j^{(n)}=0$ for $n\ge1$; the statement that $D_j^{(n)}$ follows from the $\sqrt{p_{ZZ}}$ terms holds only for a different $D_j$.
+\item \emph{Appendix~H.} ``$\sigma_X^2=9.6$'' for $C_n^2=10^{-16}$, $L=140$~km should read $2.4$ (it equals $4\sigma_X^2$); the skewness $41$ and the error $+29\%$ are reproduced.
+\item \emph{Naive key rate becoming negative.} In the single cumulative log-normal channel of the report the delta-method key rate first reaches $\le0$ at $\sigma_R^2\approx2.3$ (``near two''); in the two-arm convention of the manuscript it does not become negative up to $\sigma_X^2=3$.
+\end{enumerate}
+\paragraph{Reproducibility.} The repository results are regenerated by \texttt{python3 analytical\_validation/run\_all.py} (about $30$~s; needs \texttt{mpmath}). Tables~\ref{tab:bw-skr}, \ref{tab:lnvsgg}, \ref{tab:perarm-weak}, \ref{tab:perarm-mod} come from \texttt{paper\_analysis/scripts/gg\_beamwander\_table.py}, \texttt{ln\_vs\_gg\_per\_arm.py} and \texttt{perarm\_analytic\_errors.py} (outputs in \texttt{paper\_analysis/results/tables/}), which import the repository unchanged.
+
+\begin{thebibliography}{9}
+\bibitem{AP} L.~C.~Andrews and R.~L.~Phillips, \emph{Laser Beam Propagation through Random Media}, 2nd ed., SPIE Press (2005).
+\bibitem{AAP} M.~A.~Al-Habash, L.~C.~Andrews, R.~L.~Phillips, Opt.\ Eng.\ \textbf{40}, 1554 (2001).
+\bibitem{CAL} M.~Curty, K.~Azuma, H.-K.~Lo, npj Quantum Inf.\ \textbf{5}, 64 (2019); arXiv:1807.07667.
+\end{thebibliography}
+\end{document}

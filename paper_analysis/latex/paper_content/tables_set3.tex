@@ -1,0 +1,105 @@
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{Gamma--Gamma analytic approximations of $\mathbb E[R]$, single cumulative channel $\eta_{\rm tot}=\eta_{\rm FSO}(L)\,I$, aperture-averaged ($D=0.30$~m, $\sigma_R^2=\sigma_R^2(L)$; rows marked $^{*}$ use $L=80$~km with the prescribed $\sigma_R^2$). Errors [\%] against tensor Gauss--Laguerre quadrature (confirmed by Bessel-$K$ quadrature to $10^{-8}\%$ and by Monte Carlo): \emph{mean} = delta method about $\mathbb E[\eta_{\rm tot}]$; 2nd, 3rd, 4th = Eq.~\eqref{eq:main} truncated after $\Theta^2$, $\Theta^3$, $\Theta^4$, expanded about the log-mean (``median) point; ``gain is the increase of $\mathbb E[R]$ from aperture averaging. The last two columns apply the \emph{log-normal} formula Eq.~\eqref{eq:ln} with the same Rytov variance to the Gamma--Gamma channel. Shape parameters use $(\sigma_R^2)^{6/5}$ (code since v2.2.0); with the report's $(\sigma_R^2)^{12/5}$ the 4th-order error stays $\le0.012\%$ (here $\le0.023\%$).}
+\label{tab:gg-single}
+\begin{tabular}{lccccccccc}
+\toprule
+L [km] & $\sigma_R^2$ & $\alpha/\beta$ & gain & mean & 2nd & 3rd & 4th & LN 2nd & LN 4th\\
+\midrule
+20 & $0.05$ & $43.17/161.63$ & $+0.129$ & $-0.002$ & $-0.001$ & $-0.006$ & $0.000$ & $-0.15$ & $-0.13$ \\
+50 & $0.26$ & $9.43/19.73$ & $+0.844$ & $-0.080$ & $-0.001$ & $-0.055$ & $+0.002$ & $-1.27$ & $-1.14$ \\
+80 & $0.61$ & $5.34/8.26$ & $+1.828$ & $-0.370$ & $+0.021$ & $-0.121$ & $+0.006$ & $-4.07$ & $-3.70$ \\
+100 & $0.92$ & $4.50/5.97$ & $+2.532$ & $-0.627$ & $+0.040$ & $-0.171$ & $+0.010$ & $-7.21$ & $-6.54$ \\
+120 & $1.29$ & $4.14/4.84$ & $+3.246$ & $-0.865$ & $+0.057$ & $-0.221$ & $+0.014$ & $-11.45$ & $-10.30$ \\
+160 & $2.19$ & $4.00/3.88$ & $+4.696$ & $-1.197$ & $+0.084$ & $-0.311$ & $+0.023$ & $-23.38$ & $-20.51$ \\
+80$^{*}$ & $3.00$ & $4.12/6.34$ & $+6.652$ & $-0.634$ & $+0.037$ & $-0.211$ & $+0.014$ & $-32.49$ & $-28.25$ \\
+80$^{*}$ & $5.00$ & $4.58/7.95$ & $+8.457$ & $-0.454$ & $+0.032$ & $-0.154$ & $+0.009$ & $-52.61$ & $-45.99$ \\
+
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\linewidth}\footnotesize At $L=20$~km the progress report prints $+0.36\%$ in all formula columns; with three independent references the errors here are $|\cdot|\le0.006\%$ (formula-independent offset in the report, see Sec.~\ref{sec:notes}).\end{minipage}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Choice of expansion point for the Gamma--Gamma formula (single channel as in Table~\ref{tab:gg-single}): error [\%] of $\mathbb E[R]$ when Eq.~\eqref{eq:main} (2nd and 4th order) is centred at the log-mean (``median), at the mean, or at the mode of $\eta$. The log-mean point is best in every row.}
+\label{tab:expoint}
+\begin{tabular}{lccccccc}
+\toprule
+L [km] & $\sigma_R^2$ & log-mean 2nd & log-mean 4th & mean 2nd & mean 4th & mode 2nd & mode 4th\\
+\midrule
+20 & $0.05$ & $-0.0013$ & $0.0000$ & $+0.0097$ & $+0.0002$ & $-0.0159$ & $-0.0001$ \\
+50 & $0.26$ & $-0.0006$ & $+0.0017$ & $+0.1447$ & $+0.0060$ & $-0.2098$ & $-0.0040$ \\
+80 & $0.61$ & $+0.0214$ & $+0.0060$ & $+0.4350$ & $+0.0213$ & $-0.6146$ & $-0.0147$ \\
+100 & $0.92$ & $+0.0404$ & $+0.0100$ & $+0.6757$ & $+0.0351$ & $-0.9711$ & $-0.0250$ \\
+120 & $1.29$ & $+0.0575$ & $+0.0144$ & $+0.9093$ & $+0.0503$ & $-1.3319$ & $-0.0369$ \\
+160 & $2.19$ & $+0.0843$ & $+0.0225$ & $+1.3026$ & $+0.0785$ & $-1.9453$ & $-0.0592$ \\
+80$^{*}$ & $3.00$ & $+0.0368$ & $+0.0139$ & $+0.7607$ & $+0.0507$ & $-1.0956$ & $-0.0351$ \\
+80$^{*}$ & $5.00$ & $+0.0318$ & $+0.0090$ & $+0.5563$ & $+0.0313$ & $-0.7730$ & $-0.0206$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{Analytic approximations and their errors for the per-arm Gamma--Gamma channel, \textbf{weak class} $C_n^2=10^{-17}$, with and without beam wander. Error [\%] of $\mathbb E[e_X]$, $\mathbb E[e_Z]$, $\mathbb E[R]$ relative to an exact reference (convolution of the two arms' Bessel-$K$ log-densities, $6001$ points; density norm and $\mathbb E[I_{\rm tot}]$ equal $1$ to $10^{-11}$). \emph{mean}: delta method about $\bar\eta=\mathbb E[\eta]$ in $\eta$-space (as manuscript Tables IV--VI); \emph{2nd}, \emph{4th}: Eq.~\eqref{eq:main} about $\eta_m=\eta_0f_{\rm bb}e^{c_1}$ truncated after $\Theta^2$ and $\Theta^4$, with $c_n=2^{1-n}\kappa_n(\alpha,\beta)$ at $\sigma_R^2(L/2)$ (plane wave, no aperture). $c_2=\mathrm{Var}(X)$. Beam wander only shifts $\eta_0$ ($f_{\rm bb}^2$ is the end-to-end factor); the repository does not contain this analytic-with-BB comparison, it is computed here from the repository functions.}
+\label{tab:perarm-weak}
+\begin{tabular}{rcccccccccccc}
+\toprule
+$L$ & $\sigma_R^2(L/2)$ & $c_2$ & $f_{\rm bb}^2$ & \multicolumn{3}{c}{$e_X$} & \multicolumn{3}{c}{$e_Z$} & \multicolumn{3}{c}{$R$}\\
+\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+ & & & & mean & 2nd & 4th & mean & 2nd & 4th & mean & 2nd & 4th\\
+\midrule
+\multicolumn{13}{l}{\emph{without beam wander (GG)}} \\
+20 & $0.0136$ & $0.007$ & -- & $0.0000$ & $0.0000$ & $0.0000$ & $+0.0001$ & $+0.0002$ & $0.0000$ & $-0.0008$ & $-0.0037$ & $0.0000$ \\
+50 & $0.0728$ & $0.036$ & -- & $0.0000$ & $0.0000$ & $0.0000$ & $-0.0001$ & $+0.0005$ & $0.0000$ & $-0.0008$ & $-0.024$ & $0.0000$ \\
+80 & $0.172$ & $0.084$ & -- & $-0.0006$ & $-0.0002$ & $0.0000$ & $-0.0013$ & $+0.0001$ & $0.0000$ & $+0.0008$ & $-0.052$ & $+0.0012$ \\
+100 & $0.259$ & $0.123$ & -- & $-0.0031$ & $-0.0013$ & $-0.0001$ & $-0.0045$ & $-0.0014$ & $-0.0001$ & $+0.0035$ & $-0.083$ & $+0.0039$ \\
+120 & $0.362$ & $0.166$ & -- & $-0.013$ & $-0.0056$ & $-0.0003$ & $-0.013$ & $-0.0054$ & $-0.0002$ & $+0.010$ & $-0.132$ & $+0.0099$ \\
+160 & $0.614$ & $0.258$ & -- & $-0.139$ & $-0.063$ & $-0.0048$ & $-0.082$ & $-0.035$ & $-0.0014$ & $+0.055$ & $-0.300$ & $+0.042$ \\
+\midrule
+\multicolumn{13}{l}{\emph{with beam wander (GG+BB, $\eta_0\to\eta_0f_{\rm bb}$)}} \\
+20 & $0.0136$ & $0.007$ & $0.999$ & $0.0000$ & $0.0000$ & $0.0000$ & $+0.0001$ & $+0.0002$ & $0.0000$ & $-0.0008$ & $-0.0037$ & $0.0000$ \\
+50 & $0.0728$ & $0.036$ & $0.981$ & $0.0000$ & $0.0000$ & $0.0000$ & $-0.0001$ & $+0.0005$ & $0.0000$ & $-0.0008$ & $-0.024$ & $0.0000$ \\
+80 & $0.172$ & $0.084$ & $0.959$ & $-0.0006$ & $-0.0002$ & $0.0000$ & $-0.0013$ & $+0.0001$ & $0.0000$ & $+0.0008$ & $-0.052$ & $+0.0012$ \\
+100 & $0.259$ & $0.123$ & $0.944$ & $-0.0032$ & $-0.0013$ & $-0.0001$ & $-0.0046$ & $-0.0015$ & $-0.0001$ & $+0.0036$ & $-0.083$ & $+0.0039$ \\
+120 & $0.362$ & $0.166$ & $0.928$ & $-0.013$ & $-0.0059$ & $-0.0003$ & $-0.014$ & $-0.0056$ & $-0.0002$ & $+0.010$ & $-0.131$ & $+0.0100$ \\
+160 & $0.614$ & $0.258$ & $0.898$ & $-0.146$ & $-0.066$ & $-0.0050$ & $-0.084$ & $-0.036$ & $-0.0014$ & $+0.057$ & $-0.302$ & $+0.042$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering\scriptsize
+\caption{As Table~\ref{tab:perarm-weak} for the \textbf{moderate class} $C_n^2=10^{-15}$ ($\sigma_R^2(L/2)=1.4$--$61$, $\beta\to1$, $c_2=O(1)$). There is no small parameter: the 4th-order formula is no longer better than the 2nd, and with beam wander at $L=160$~km ($f_{\rm bb}^2=4.5\times10^{-3}$, operating point below the key-rate cut-off) every formula fails.}
+\label{tab:perarm-mod}
+\begin{tabular}{rcccccccccccc}
+\toprule
+$L$ & $\sigma_R^2(L/2)$ & $c_2$ & $f_{\rm bb}^2$ & \multicolumn{3}{c}{$e_X$} & \multicolumn{3}{c}{$e_Z$} & \multicolumn{3}{c}{$R$}\\
+\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+ & & & & mean & 2nd & 4th & mean & 2nd & 4th & mean & 2nd & 4th\\
+\midrule
+\multicolumn{13}{l}{\emph{without beam wander (GG)}} \\
+20 & $1.36$ & $0.441$ & -- & $-0.100$ & $-0.091$ & $-0.102$ & $-2.56$ & $-2.34$ & $-2.65$ & $+11.49$ & $+4.93$ & $+12.56$ \\
+50 & $7.28$ & $0.781$ & -- & $-0.029$ & $-0.014$ & $-0.011$ & $-0.145$ & $-0.011$ & $-0.122$ & $-0.133$ & $-3.59$ & $+2.06$ \\
+80 & $17.2$ & $0.842$ & -- & $-0.152$ & $-0.089$ & $-0.033$ & $-0.369$ & $-0.122$ & $-0.054$ & $+0.035$ & $-1.00$ & $+2.20$ \\
+100 & $25.9$ & $0.853$ & -- & $-0.371$ & $-0.217$ & $-0.077$ & $-0.608$ & $-0.209$ & $-0.049$ & $+0.067$ & $-0.403$ & $+2.23$ \\
+120 & $36.2$ & $0.857$ & -- & $-0.817$ & $-0.473$ & $-0.162$ & $-0.949$ & $-0.333$ & $-0.061$ & $+0.101$ & $-0.114$ & $+2.30$ \\
+160 & $61.4$ & $0.857$ & -- & $-3.10$ & $-1.71$ & $-0.481$ & $-2.02$ & $-0.698$ & $-0.064$ & $+0.191$ & $+0.113$ & $+2.62$ \\
+\midrule
+\multicolumn{13}{l}{\emph{with beam wander (GG+BB, $\eta_0\to\eta_0f_{\rm bb}$)}} \\
+20 & $1.36$ & $0.441$ & $0.758$ & $-0.055$ & $-0.047$ & $-0.056$ & $-1.32$ & $-1.13$ & $-1.38$ & $+6.75$ & $+1.18$ & $+7.57$ \\
+50 & $7.28$ & $0.781$ & $0.085$ & $-0.099$ & $-0.056$ & $-0.019$ & $-0.258$ & $-0.078$ & $-0.043$ & $+0.029$ & $-1.46$ & $+1.60$ \\
+80 & $17.2$ & $0.842$ & $0.025$ & $-0.920$ & $-0.528$ & $-0.172$ & $-0.961$ & $-0.345$ & $-0.059$ & $+0.127$ & $-0.383$ & $+2.06$ \\
+100 & $25.9$ & $0.853$ & $0.014$ & $-2.67$ & $-1.49$ & $-0.422$ & $-1.79$ & $-0.637$ & $-0.069$ & $+0.215$ & $-0.202$ & $+2.39$ \\
+120 & $36.2$ & $0.857$ & $0.009$ & $-5.94$ & $-3.07$ & $-0.585$ & $-2.79$ & $-0.868$ & $+0.097$ & $+0.150$ & $-0.377$ & $+2.74$ \\
+160 & $61.4$ & $0.857$ & $0.005$ & $-11.87$ & $-3.70$ & $+1.58$ & $-2.20$ & $+1.56$ & $+2.78$ & $-48.82$ & $-51.31$ & $-41.41$ \\
+
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\linewidth}\footnotesize The reference is the unclipped Gamma--Gamma product; the repository engine caps each arm at $\eta\le1$, which lowers $\mathbb E[R]$ by $9.4\%$ at $L=20$~km (arm nominal $0.56$), $\le0.53\%$ at $L=50$ and $\le0.07\%$ for $L\ge80$~km; the large $L=20$~km errors of the 4th order are therefore a property of the expansion, not of this cap.\end{minipage}
+\end{table}
