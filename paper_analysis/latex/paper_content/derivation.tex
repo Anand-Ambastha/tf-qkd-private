@@ -1,0 +1,225 @@
+%% ===================================================================
+\section{Derivation: from the Gamma--Gamma channel to the cumulant--Euler formula}
+\label{sec:derivation}
+
+\subsection{Channel model and the quantity to be averaged}
+
+Let Charlie sit midway, so that each arm has length $L/2$. Writing $\bar\eta_{A},\bar\eta_{B}$ for the (deterministic) arm transmittances and $I_A,I_B$ for the independent, unit-mean fading factors,
+\begin{equation}
+  \eta_A=\bar\eta_A I_A,\qquad \eta_B=\bar\eta_B I_B,\qquad
+  \eta\equiv\sqrt{\eta_A\eta_B}=\eta_0\,e^{X},\qquad
+  X=\tfrac12(\ln I_A+\ln I_B),\qquad \eta_0=\sqrt{\bar\eta_A\bar\eta_B}.
+  \label{eq:model}
+\end{equation}
+Here $\eta_0=\sqrt{\eta_{\rm FSO}(L)}$ for the deterministic link $\eta_{\rm FSO}=\eta_{\rm atm}(L)\,\eta_{\rm geo}(L/2)^2$, and $\eta_0=\sqrt{\eta_{\rm FSO}}\,f_{\rm bb}$ when turbulence-induced beam broadening (beam wander) is included (Sec.~\ref{sec:bb}). The progress-report variant uses one cumulative channel $\eta_{\rm tot}=\eta_{\rm FSO}\,I$, i.e.\ $X=\tfrac12\ln I$ and $\eta_0=\sqrt{\eta_{\rm FSO}}$.
+Every key-rate quantity $Q\in\{p_{XX},e_X,e_Z,R\}$ is a smooth function $Q(\eta)$ of the effective transmittance, and the turbulence-averaged value is
+\begin{equation}
+  \mathbb E[Q]=\int_{-\infty}^{\infty}Q\!\left(\eta_0e^{x}\right)p_X(x)\,dx .
+  \label{eq:avg}
+\end{equation}
+Energy neutrality, $\mathbb E[I]=1$ for each factor, gives $\mathbb E[e^{2X}]=1$, i.e.\ $\mathbb E[\eta_{\rm tot}]=\eta_0^2$.
+
+\subsection{Gamma--Gamma statistics and the cumulants of $\ln I$}
+\label{sec:ggstats}
+
+\paragraph{Product of two Gamma variables.}
+Let $I=X_aX_b$ with $X_a\sim\Gamma(\alpha,\text{rate }\alpha)$ and $X_b\sim\Gamma(\beta,\text{rate }\beta)$ independent, so both have unit mean. For $X\sim\Gamma(k,\text{rate }k)$ the Mellin transform is
+$\mathbb E[X^{s}]=\Gamma(k+s)/(\Gamma(k)k^{s})$ for $s>-k$. By independence
+\begin{equation}
+  \mathbb E[I^{s}]=\frac{\Gamma(\alpha+s)\,\Gamma(\beta+s)}{\Gamma(\alpha)\Gamma(\beta)\,(\alpha\beta)^{s}} .
+  \label{eq:mellin}
+\end{equation}
+Mellin inversion gives the familiar density
+$p_I(I)=\dfrac{2(\alpha\beta)^{(\alpha+\beta)/2}}{\Gamma(\alpha)\Gamma(\beta)}I^{(\alpha+\beta)/2-1}K_{\alpha-\beta}\!\big(2\sqrt{\alpha\beta I}\big)$
+(used in the code as the Bessel-$K$ reference), and \eqref{eq:mellin} gives $\mathbb E[I]=1$, $\mathbb E[I^2]=(1+\tfrac1\alpha)(1+\tfrac1\beta)$, hence the scintillation index
+\begin{equation}
+  \mathrm{SI}=\frac1\alpha+\frac1\beta+\frac1{\alpha\beta}.
+\end{equation}
+
+\paragraph{Cumulants of $Y=\ln I$.}
+Since $\mathbb E[e^{sY}]=\mathbb E[I^s]$, \eqref{eq:mellin} is the moment generating function of $Y$, and its logarithm is the cumulant generating function
+\begin{equation}
+  K_Y(s)=\ln\Gamma(\alpha+s)+\ln\Gamma(\beta+s)-\ln\Gamma(\alpha)-\ln\Gamma(\beta)-s\ln(\alpha\beta),
+  \qquad s>-\min(\alpha,\beta).
+\end{equation}
+Differentiating at $s=0$ with $\psi^{(m)}$ the polygamma functions,
+\begin{equation}
+  \boxed{\;\kappa_1=\psi(\alpha)+\psi(\beta)-\ln(\alpha\beta),\qquad
+  \kappa_n=\psi^{(n-1)}(\alpha)+\psi^{(n-1)}(\beta)\quad(n\ge2).\;}
+  \label{eq:kappa}
+\end{equation}
+Energy neutrality is the identity $K_Y(1)=\ln\alpha+\ln\beta-\ln(\alpha\beta)=0$. The signs are fixed by $\psi'>0$, $\psi''<0$, $\psi'''>0$: $\kappa_2>0$, $\kappa_3<0$ (left-skewed log-irradiance, deep fades), $\kappa_4>0$. For large shapes, $\psi'(k)\simeq1/k$, $\psi''(k)\simeq-1/k^2$, $\psi'''(k)\simeq2/k^3$, so $\kappa_3,\kappa_4$ are of higher order in $\varepsilon\sim1/\alpha+1/\beta$ than $\kappa_2$ (Sec.~\ref{sec:order}). The code checks \eqref{eq:kappa} against direct numerical integration to $\le3\times10^{-13}$ (test G0).
+
+\paragraph{Shape parameters.}
+As implemented in \texttt{averaging.gg\_params} and \texttt{turbulence/gamma\_gamma.py} (plane wave, $\sigma_R^2=1.23\,C_n^2k^{7/6}L^{11/6}$, $d^2=kD^2/4L$):
+\begin{align}
+  \alpha&=\Big[\exp\!\Big(\tfrac{0.49\,\sigma_R^2}{(1+1.11\,\sigma_R^{12/5})^{7/6}}\Big)-1\Big]^{-1},\\
+  \beta&=\Big[\exp\!\Big(\tfrac{0.51\,\sigma_R^2\,(1+0.69\,\sigma_R^{12/5})^{-5/6}}{(1+0.9d^2+0.62\,d^2\sigma_R^{12/5})^{5/6}}\Big)-1\Big]^{-1}.
+\end{align}
+The symbol $\sigma_R^{12/5}$ here means $(\sigma_R^2)^{6/5}$ ($\sigma_R$ is the Rytov \emph{standard deviation}). The progress report evaluates $(\sigma_R^2)^{12/5}$; the repository code uses $(\sigma_R^2)^{6/5}$ since v2.2.0 (see Sec.~\ref{sec:notes}). The per-arm model of the repository uses $d=0$ (no aperture averaging) and $\sigma_R^2(L/2)$; the progress-report tables use $\sigma_R^2(L)$ and $D=0.30$~m. Aperture averaging enlarges $\beta$, which keeps the log-cumulants small and is what makes the expansion below accurate in the report's Table~1.
+
+\subsection{Expansion in the log-transmittance}
+
+\begin{lemma}[derivatives with respect to $x=\ln\eta$]\label{lem:theta}
+Let $\Theta=\eta\,\dfrac{d}{d\eta}$ (Euler operator) and $F(x)=Q(\eta_0e^{x})$. Then $F^{(n)}(x)=(\Theta^nQ)(\eta_0e^{x})$ for all $n\ge0$.
+\end{lemma}
+\begin{proof}
+$F'(x)=\eta_0e^{x}Q'(\eta_0e^{x})=(\Theta Q)(\eta_0e^{x})$; apply the same step to $\Theta Q$ and iterate.
+\end{proof}
+
+\begin{lemma}[Euler--Stirling form]\label{lem:stirling}
+$\Theta^n=\sum_{k=1}^{n}S(n,k)\,\eta^{k}\partial_\eta^{k}$, with $S(n,k)$ the Stirling numbers of the second kind.
+\end{lemma}
+\begin{proof}
+True for $n=1$. For the induction step use $\Theta(\eta^{k}\partial^{k}f)=\eta\partial(\eta^{k}\partial^{k}f)=k\,\eta^{k}\partial^{k}f+\eta^{k+1}\partial^{k+1}f$. The coefficient of $\eta^{k}\partial^{k}$ in $\Theta^{n+1}$ is therefore $kS(n,k)+S(n,k-1)=S(n+1,k)$.
+\end{proof}
+Explicitly,
+\begin{align}
+  \Theta^2&=\eta^2\partial^2+\eta\partial, &
+  \Theta^3&=\eta^3\partial^3+3\eta^2\partial^2+\eta\partial,\\
+  \Theta^4&=\eta^4\partial^4+6\eta^3\partial^3+7\eta^2\partial^2+\eta\partial. & &
+\end{align}
+(The code evaluates $\Theta^nQ$ from the derivatives $Q^{(k)}$, $k\le4$, with these weights; \texttt{averaging.theta\_ops}. Test T2 confirms $\Theta^n\eta^m=m^n\eta^m$ to $10^{-13}$.)
+
+\begin{theorem}[cumulant--Euler expansion]\label{thm:main}
+Let $c_n$ be the cumulants of $X=\ln(\eta/\eta_0)$, $\eta_m=\eta_0e^{c_1}$ the log-mean point, and $\mu_4=c_4+3c_2^2$. Then
+\begin{equation}
+  \boxed{\;
+  \mathbb E[Q]\;\simeq\;Q(\eta_m)+\frac{c_2}{2}\,\Theta^2Q+\frac{c_3}{6}\,\Theta^3Q+\frac{c_4+3c_2^{2}}{24}\,\Theta^4Q\Big|_{\eta=\eta_m},\qquad \eta_m=\eta_0e^{c_1}.\;}
+  \label{eq:main}
+\end{equation}
+The first neglected terms are $\frac{\mu_5}{120}\Theta^5Q+\frac{\mu_6}{720}\Theta^6Q$ with $\mu_5=c_5+10c_2c_3$ and $\mu_6=c_6+15c_2c_4+10c_3^2+15c_2^3$.
+\end{theorem}
+\begin{proof}
+Expand $F$ of Lemma~\ref{lem:theta} about $x=c_1$,
+$F(x)=\sum_{n=0}^{4}\frac{F^{(n)}(c_1)}{n!}(x-c_1)^n+r_5(x)$, and take the expectation. The central moments $\mu_n=\mathbb E[(X-c_1)^n]$ follow from the moment--cumulant relations for the centred variable, whose cumulants are $(0,c_2,c_3,c_4,\dots)$: $\mu_1=0$, $\mu_2=c_2$, $\mu_3=c_3$, $\mu_4=c_4+3c_2^2$, $\mu_5=c_5+10c_2c_3$, $\mu_6=c_6+15c_2c_4+10c_3^2+15c_2^3$. With $F^{(n)}(c_1)=(\Theta^nQ)(\eta_m)$ this is \eqref{eq:main}; the stated neglected terms are the next two terms of the same series.
+\end{proof}
+
+\paragraph{Explicit form in ordinary derivatives.}
+Inserting Lemma~\ref{lem:stirling} into \eqref{eq:main} and collecting powers,
+\begin{equation}
+  \mathbb E[Q]\simeq Q+a_1\,\eta Q'+a_2\,\eta^2Q''+a_3\,\eta^3Q'''+a_4\,\eta^4Q^{(4)}\Big|_{\eta_m},
+\end{equation}
+\begin{equation}
+  a_1=\tfrac{c_2}{2}+\tfrac{c_3}{6}+\tfrac{\mu_4}{24},\quad
+  a_2=\tfrac{c_2}{2}+\tfrac{c_3}{2}+\tfrac{7\mu_4}{24},\quad
+  a_3=\tfrac{c_3}{6}+\tfrac{\mu_4}{4},\quad
+  a_4=\tfrac{\mu_4}{24}.
+\end{equation}
+
+\paragraph{Why the log-mean point.}
+Expanding about $x=c_1=\mathbb E[X]$ removes the first-order term exactly ($\mu_1=0$), so the leading correction is the variance term. For a log-normal channel $\eta_m$ is the median of $\eta$; for Gamma--Gamma it is the geometric mean $\exp(\mathbb E\ln\eta)$ (called ``median'' in the report). The alternative expansion points (mean, mode) are compared in Table~\ref{tab:expoint}.
+
+\subsection{Cumulants of $X$ for the channels used in the paper}
+\label{sec:cumX}
+
+\begin{proposition}\label{prop:cX}
+For the model \eqref{eq:model} with independent Gamma--Gamma arms of shapes $(\alpha_A,\beta_A)$ and $(\alpha_B,\beta_B)$,
+\begin{equation}
+  c_n=2^{-n}\big(\kappa_n(\alpha_A,\beta_A)+\kappa_n(\alpha_B,\beta_B)\big).
+\end{equation}
+For equal arms $c_n=2^{1-n}\kappa_n(\alpha,\beta)$; for the single cumulative channel $\eta_{\rm tot}=\eta_{\rm FSO}I$ one has $c_n=2^{-n}\kappa_n(\alpha,\beta)$.
+\end{proposition}
+\begin{proof}
+$K_X(s)=\ln\mathbb E[e^{sX}]=\ln\mathbb E[e^{(s/2)Y_A}]+\ln\mathbb E[e^{(s/2)Y_B}]=K_{Y_A}(s/2)+K_{Y_B}(s/2)$ by independence; the $n$-th derivative at $0$ carries the factor $2^{-n}$.
+\end{proof}
+In polygamma form (equal arms):
+\begin{equation}
+  c_1=\tfrac12\kappa_1,\quad c_2=\tfrac12\big[\psi'(\alpha)+\psi'(\beta)\big],\quad
+  c_3=\tfrac14\big[\psi''(\alpha)+\psi''(\beta)\big],\quad
+  c_4=\tfrac18\big[\psi'''(\alpha)+\psi'''(\beta)\big],
+\end{equation}
+and for the single channel $c_2=\tfrac14[\psi'(\alpha)+\psi'(\beta)]$, $c_3=\tfrac18[\psi''(\alpha)+\psi''(\beta)]$, $c_4=\tfrac1{16}[\psi'''(\alpha)+\psi'''(\beta)]$. Written in the variable $Y=\ln I$ of the progress report, \eqref{eq:main} reads $\mathbb E[Q]\simeq Q+\sum_{n=2}^{4}\frac{\mu^Y_n}{n!\,2^{n}}\Theta^nQ$ with $\mu^Y_2=\kappa_2$, $\mu^Y_3=\kappa_3$, $\mu^Y_4=\kappa_4+3\kappa_2^2$, which is exactly \texttt{averaging.gg\_expansion}. The two forms agree to machine precision in the code (max.\ relative difference $0$ at $L=50,100,160$~km).
+
+\subsection{Reduction to the log-normal formula}
+
+For a log-normal channel with energy neutrality ($\mathbb E[\eta_{\rm tot}]=\eta_0^2$) the log-transmittance is Gaussian, $X\sim\mathcal N(-\sigma_X^2,\sigma_X^2)$, so $c_1=-\sigma_X^2$, $c_2=\sigma_X^2$, $c_{n\ge3}=0$, $\mu_4=3\sigma_X^4$. For two arms, $\sigma_X^2=\sigma_R^2(L/2)/2$. Theorem~\ref{thm:main} then gives
+\begin{equation}
+  \mathbb E[Q]\simeq Q(\eta_{\rm med})+\frac{\sigma_X^2}{2}\,\Theta^2Q+\frac{\sigma_X^4}{8}\,\Theta^4Q,\qquad \eta_{\rm med}=\eta_0e^{-\sigma_X^2},
+  \label{eq:ln}
+\end{equation}
+which is the log-normal two-term / four-term formula of the manuscript (the $\Theta^3$ term vanishes with $c_3=0$ and $\tfrac{3\sigma_X^4}{24}=\tfrac{\sigma_X^4}{8}$). Setting $\kappa_3=\kappa_4=0$ in the Gamma--Gamma formula reproduces \eqref{eq:ln} to $10^{-12}$ (test G1). Moments of the log-normal channel: $\mathbb E[\eta^n]=\eta_0^n\exp\!\big[n(n-2)\sigma_X^2/2\big]$, and its skewness in $\eta$ is $\gamma_1=(e^{\sigma_X^2}+2)\sqrt{e^{\sigma_X^2}-1}$.
+
+\subsection{The delta method as the expansion about the mean}
+
+Expanding $Q$ about $\bar\eta=\mathbb E[\eta]$ in powers of $\eta-\bar\eta$ instead of $\ln\eta-c_1$ gives
+$\mathbb E[Q]\simeq Q(\bar\eta)+\tfrac12Q''(\bar\eta)\,\mathrm{Var}(\eta)$, with $\bar\eta=\eta_0e^{-\sigma_X^2/2}$, $\mathrm{Var}(\eta)=\eta_0^2(1-e^{-\sigma_X^2})$ in the log-normal case. The neglected third-order term is $\tfrac16Q'''(\bar\eta)\,\gamma_1\mathrm{Var}(\eta)^{3/2}$, which is not small once $\gamma_1$ is large (Table~\ref{tab:delta}: $\gamma_1=41$ at $\sigma_X^2=2.4$, error $+28.8\%$). In the variable $x=\ln\eta$ the log-normal law is symmetric, so odd terms vanish and the series is in powers of $\sigma_X^2$ only. Carrying out the same delta expansion in the total transmittance $\eta_{\rm tot}=\eta^2$ gives a different and worse result ($-20.1\%$ at $L=160$~km, Table~\ref{tab:delta}).
+
+\subsection{Order bookkeeping: which truncation is consistent}
+\label{sec:order}
+
+For large shapes put $\varepsilon\sim1/\alpha+1/\beta$. From \eqref{eq:kappa} and Proposition~\ref{prop:cX}: $c_2=O(\varepsilon)$, $c_3=O(\varepsilon^{2})$, $c_4=O(\varepsilon^{3})$, hence $\mu_4=3c_2^2+c_4=O(\varepsilon^{2})$, $\mu_5=O(\varepsilon^{3})$, $\mu_6=O(\varepsilon^{3})$. The terms of \eqref{eq:main} are therefore
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+term & $c_2\Theta^2/2$ & $c_3\Theta^3/6$ \;and\; $\tfrac{c_2^2}{8}\Theta^4$ \\
+order & $\varepsilon$ & $\varepsilon^{2}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+and the neglected terms are $O(\varepsilon^{3})$. Thus (i) the ``2nd-order'' formula is correct to $O(\varepsilon)$; (ii) the ``4th-order'' formula \eqref{eq:main} is the complete $O(\varepsilon^{2})$ approximation; (iii) the ``3rd-order'' truncation keeps only one of the two $O(\varepsilon^{2})$ terms ($c_3\Theta^3$ but not $\tfrac{c_2^2}{8}\Theta^4$) and need not improve on the 2nd order. This is the pattern in Table~\ref{tab:gg-single}: the 3rd-order column is worse than the 2nd-order one, and the 4th-order column is best. The series is asymptotic, not convergent: when no small parameter exists (e.g.\ $\beta\to1$ in saturation, $c_2=O(1)$), adding terms does not help; see the moderate-turbulence rows of Table~\ref{tab:perarm-mod}.
+
+\subsection{Beam wander / beam broadening}
+\label{sec:bb}
+
+In the repository, turbulence-induced long-term beam broadening (which contains beam wander) acts per arm as a deterministic loss on the nominal transmittance,
+\begin{equation}
+  W_{\rm LT}^2=W^2\big(1+1.63\,\sigma_R^{12/5}\Lambda\big),\quad \Lambda=\frac{2z}{kW^2},\qquad
+  f_{\rm bb}=\frac{1-e^{-2a^2/W_{\rm LT}^2}}{1-e^{-2a^2/W^2}}\le1,
+\end{equation}
+with $z=L/2$, $W=w(z)$ the free-space beam radius, $a$ the receiver radius and $\sigma_R^{12/5}=(\sigma_R^2)^{6/5}$ per arm. The fading statistics are left unchanged ($\alpha,\beta$ keep their plane-wave values), so in \eqref{eq:model} only $\eta_0$ changes:
+\begin{equation}
+  \eta_0\;\longrightarrow\;\eta_0\,f_{\rm bb}(L/2),\qquad c_n\;\text{unchanged}.
+\end{equation}
+Theorem~\ref{thm:main} therefore applies verbatim with the shifted log-mean point $\eta_m=\eta_0f_{\rm bb}\,e^{c_1}$. The derivatives $\Theta^nQ$ must be re-evaluated at the shifted point; they are not rescaled, because $Q(\eta)$ is not a power law. The shift moves the operating point down the key-rate curve towards the cut-off, which is why the expansion deteriorates when $f_{\rm bb}^2$ becomes small (Table~\ref{tab:perarm-mod}, $L=160$~km).
+
+\subsection{Derivatives of the key rate}
+\label{sec:deriv}
+
+Equation \eqref{eq:main} needs $Q^{(k)}(\eta)$, $k\le4$, for $Q=e_X,e_Z,R$ (and $p_{XX}$). With $\gamma=\alpha^2\eta$, $\Omega=\cos\varphi\cos\theta$, $A=1-p_d$ the functions are those of the code (\texttt{legacy\_baseline.py}); all $\eta$-derivatives below carry a factor $\alpha^{2n}$ from $\partial_\eta=\alpha^2\partial_\gamma$.
+\begin{align}
+  p_{XX}&=\tfrac A2\big[e^{-(1-\Omega)\gamma}+e^{-(1+\Omega)\gamma}\big]-A^2e^{-2\gamma},\\
+  p_{XX}^{(n)}&=\alpha^{2n}\Big\{\tfrac A2\big[(-(1-\Omega))^{n}e^{-(1-\Omega)\gamma}+(-(1+\Omega))^{n}e^{-(1+\Omega)\gamma}\big]-A^2(-2)^{n}e^{-2\gamma}\Big\},\\
+  e_X&=\frac{\mathcal N}{\mathcal D},\quad \mathcal N=e^{-\Omega\gamma}-Ae^{-\gamma},\quad \mathcal D=e^{-\Omega\gamma}+e^{\Omega\gamma}-2Ae^{-\gamma},\\
+  e_X^{(n)}&=\alpha^{2n}\,\frac{\mathcal N_\gamma^{(n)}-\sum_{k=1}^{n}\binom nk\mathcal D_\gamma^{(k)}\,e_{X,\gamma}^{(n-k)}}{\mathcal D},
+\end{align}
+where $\mathcal N_\gamma^{(n)}=(-\Omega)^ne^{-\Omega\gamma}-A(-1)^ne^{-\gamma}$, $\mathcal D_\gamma^{(n)}=(-\Omega)^ne^{-\Omega\gamma}+\Omega^ne^{\Omega\gamma}-2A(-1)^ne^{-\gamma}$ (derivatives in $\gamma$; the recursion is for $\gamma$-derivatives, multiplied by $\alpha^{2n}$ at the end). The phase-error bound is
+\begin{align}
+  p_{ZZ}^{(n_A,n_B)}(\eta)&=A\Big[p_d(1-\eta)^{N}+\sum_{k,l}C^{(n_A,n_B)}_{kl}\,\eta^{k+l}(1-\eta)^{N-k-l}-(1-\eta)^{N}\Big],\quad N=n_A+n_B,\\
+  S_j&=\sum_{\substack{m_A,m_B\\ n_A+n_B\le N_{\max}}}c^{(j)}_{m_A}c^{(j)}_{m_B}\sqrt{p_{ZZ}^{(2m_A+j,\,2m_B+j)}},\qquad
+  c^{(j)}_{m}=\frac{e^{-\alpha^2/2}\alpha^{n}}{\sqrt{n!}}\Big|_{n=2m+j},\\
+  e_Z&=\frac{\sum_{j=0,1}(S_j+D_j)^2}{p_{XX}},
+\end{align}
+with $C_{kl}$ the coefficients of CAL Eq.~(35) and $D_j=\big(\sum_{m\ge0}c^{(j)}_m\big)^2-\big(\sum_{m\le m_{\max}}c^{(j)}_m\big)^2$ the truncation residual, which does \emph{not} depend on $\eta$ (so $D_j^{(n)}=0$, $n\ge1$). The key rate is
+\begin{equation}
+  R=2\,p_{XX}\,K,\qquad K=1-h(e_X)-h(e_Z),\qquad h(x)=-x\log_2x-(1-x)\log_2(1-x).
+\end{equation}
+The derivatives are assembled with standard rules:
+\begin{itemize}
+\item $\partial^n[\eta^a(1-\eta)^b]=\sum_{i=0}^{n}\binom ni a^{\underline i}\eta^{a-i}(-1)^{n-i}b^{\underline{n-i}}(1-\eta)^{b-n+i}$ (falling factorials) for $p_{ZZ}$;
+\item for $\sqrt p$, with $p_k=p^{(k)}$ and $s=\sqrt{p_0}$:
+$(\sqrt p)'=\tfrac{p_1}{2s}$,\;
+$(\sqrt p)''=\tfrac{p_2}{2s}-\tfrac{p_1^2}{4p_0^{3/2}}$,\;
+$(\sqrt p)'''=\tfrac{p_3}{2s}-\tfrac{3p_1p_2}{4p_0^{3/2}}+\tfrac{3p_1^3}{8p_0^{5/2}}$,\;
+$(\sqrt p)^{(4)}=\tfrac{p_4}{2s}-\tfrac{4p_1p_3+3p_2^2}{4p_0^{3/2}}+\tfrac{9p_1^2p_2}{4p_0^{5/2}}-\tfrac{15p_1^4}{16p_0^{7/2}}$;
+\item quotient $q=u/v$: $q^{(n)}=\big[u^{(n)}-\sum_{k=1}^{n}\binom nk v^{(k)}q^{(n-k)}\big]/v$ (for $e_Z=U/p_{XX}$);
+\item entropy: $h'=\log_2\frac{1-x}{x}$, $h''=-\frac{1}{x(1-x)\ln2}$, $h'''=\frac1{\ln2}\big(\frac1{x^2}-\frac1{(1-x)^2}\big)$, $h^{(4)}=-\frac2{\ln2}\big(\frac1{x^3}+\frac1{(1-x)^3}\big)$;
+\item composition (Fa\`a di Bruno, $n\le4$): $(f\!\circ\! g)'=f'g'$, $(f\!\circ\! g)''=f'g''+f''g'^2$, $(f\!\circ\! g)'''=f'g'''+3f''g'g''+f'''g'^3$, $(f\!\circ\! g)^{(4)}=f'g^{(4)}+f''(4g'g'''+3g''^2)+6f'''g'^2g''+f^{(4)}g'^4$;
+\item Leibniz for the products $p_{XX}K$ and $T_j^2$.
+\end{itemize}
+These formulas hold on the smooth branch $p_{XX}>0$, $0<e_X,e_Z<\tfrac12$, $R>0$ (no clipping active), which is why an expansion centred below the key-rate cut-off is not meaningful.
+The analytic derivatives agree with an independent 60-digit \texttt{mpmath} implementation to at most $1.0\times10^{-9}$ (all orders $0$--$4$, $L=20$--$160$~km; test T1), and the $x$-space (Hermite) and $\eta$-space (Euler--Stirling) routes agree to $3.4\times10^{-9}$ over $78$ cross-checks (test T3).
+
+\subsection{Summary of the chain}
+\[
+\underbrace{I=X_aX_b}_{\text{Gamma--Gamma}}
+\;\xrightarrow{\ \eqref{eq:mellin}\ }\;
+\underbrace{K_Y(s)}_{\text{log-CGF}}
+\;\xrightarrow{\ \eqref{eq:kappa}\ }\;
+\kappa_n
+\;\xrightarrow{\ \text{Prop.~\ref{prop:cX}}\ }\;
+c_n
+\;\xrightarrow{\ \text{Lemmas~\ref{lem:theta},\ref{lem:stirling}, Thm.~\ref{thm:main}}\ }\;
+\mathbb E[Q]\simeq Q(\eta_m)+\tfrac{c_2}{2}\Theta^2Q+\tfrac{c_3}{6}\Theta^3Q+\tfrac{c_4+3c_2^2}{24}\Theta^4Q ,
+\]
+and, with $\kappa_3=\kappa_4=0$ (Gaussian $X$), to the log-normal formula \eqref{eq:ln}.
