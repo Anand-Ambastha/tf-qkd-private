@@ -2,6 +2,19 @@
 
 ## Version History
 
+### v2.4.1: truncation residual Delta_j (CAL Eq. 22)
+- `residual_j` subtracted a square set of photon numbers (m_A, m_B <= (Nmax - j)//2) from the full double sum, while
+  `inner_sum_j` sums over the triangular set n_A + n_B <= Nmax. Pairs such as (n_A, n_B) = (2, 4) were in neither term, so
+  Delta_j was too small (at alpha = 0.2 and Nmax = 4: 4.7e-6 against 2.3e-5 for j = 0). `residual_j` now subtracts the
+  triangular set. Added a brute-force regression test.
+- Effect on the key rate at alpha = 0.2 (deterministic): -0.1% at 10 dB, -2.6% at 60 dB, -13% at 75 dB, -70% at 80 dB; the
+  cutoff loss moves by about 0.26 dB. Maximum range (R > 1e-9): 252.0 -> 248.8 km deterministic, 291.7 -> 288.7 km
+  Gamma-Gamma weak, 317.6 -> 314.5 km log-normal weak.
+- Pinned manuscript Tables IV to VI and one Appendix H value in `analytical_validation/paper_values.py` and the test
+  suite were regenerated; they move by at most 0.025 percentage points (old values are noted in the file).
+  The result tables, figures and logs in `results_v2.3.0/`, `paper_analysis/results/` and the reports predate this fix and
+  have not been regenerated.
+
 ### v2.4.0: analytical_validation/ (tests of the log-normal and Gamma-Gamma analytical formulas)
 - New folder `analytical_validation/` with three scripts and a PDF report: 01 tests the log-normal averaging framework,
   02 tests the Gamma-Gamma cumulant expansion with aperture averaging, 03 builds

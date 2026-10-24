@@ -252,10 +252,21 @@ def truncated_coeff_sum(j, alpha, Nmax):
 
 
 def residual_j(j, alpha, Nmax, Nterms=80):
-    """Eq. (22)."""
-    S_full = marginal_coeff_sum(j, alpha, Nterms)
-    S_trunc = truncated_coeff_sum(j, alpha, Nmax)
-    return max(S_full ** 2 - S_trunc ** 2, 0.0)
+    """Eq. (22): Delta_j, the weight of all (m_A, m_B) outside S_j.
+
+    S_j is the set used in inner_sum_j, n_A + n_B <= Nmax with n = 2m + j, i.e.
+    m_A + m_B <= (Nmax - 2j) // 2. Delta_j is therefore the full double sum
+    minus the sum over that triangular set. (Versions before this fix subtracted
+    a square set, m_A, m_B <= (Nmax - j) // 2, which left pairs such as
+    (n_A, n_B) = (2, 4) out of both S_j and Delta_j and under-counted Delta_j.)
+    """
+    c = _cat_coeff_vec(j, alpha, Nterms - 1)
+    S_full = float(np.sum(c))
+    K = (Nmax - 2 * j) // 2
+    inside = 0.0
+    if K >= 0:
+        inside = sum(c[a] * c[b] for a in range(K + 1) for b in range(K + 1 - a))
+    return max(S_full ** 2 - float(inside), 0.0)
 
 
 # =============================================================================
