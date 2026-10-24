@@ -2,19 +2,16 @@
 """
 example_04_max_range_and_validity.py
 =======================================
-Full "how far can this link go" analysis, run separately for the three
-standard atmospheric turbulence-strength classes (legacy_baseline.Cn2_classes:
-weak=1e-17, moderate=1e-15, strong=1e-13 m^(-2/3)) rather than one
-arbitrary fixed Cn2 -- turbulence strength at a real site is a physical
-site condition, not a free parameter, so "max range" only means something
-once you fix which site condition you're asking about.
+Maximum-range analysis for the three standard turbulence-strength classes
+(legacy_baseline.Cn2_classes: weak=1e-17, moderate=1e-15, strong=1e-13 m^(-2/3)).
+Maximum range is defined only for a given Cn2, so the analysis is repeated
+for each class.
 
 For EACH Cn2 class, this script:
   (a) Sweeps total Alice-Bob distance L for every turbulence model
       individually (deterministic, log-normal, Gamma-Gamma, corrected
-      Gamma-Gamma) -- including distances where a given model is no
-      longer physically valid, so you can see what "using the wrong
-      model" would have told you at that site condition.
+      Gamma-Gamma), including distances where a given model is outside
+      its validity range.
   (b) Runs the same sweep in model="auto" mode, which switches model at
       each distance according to the Rytov-variance regime boundaries
       *for that Cn2*.
@@ -29,22 +26,10 @@ For EACH Cn2 class, this script:
 
 Run: python3 examples/example_04_max_range_and_validity.py
 
-NOTE ON A BUG FOUND DURING DEVELOPMENT OF THIS SCRIPT: an earlier version
-of the four skr_* evaluator functions below included a shortcut
-`if eta0 < 1e-8: return 0.0`, intended as a cheap numerical-safety floor.
-Because eta_nominal(L) is Cn2-independent, this forced EVERY
-turbulence-dependent curve to zero at the exact same distance
-(~79.45 km), producing an identical, artificial cutoff across all models
-and all three Cn2 classes that had nothing to do with the actual physics
--- and, worse, it silently discarded exactly the tail contribution that
-makes modeling turbulence worth doing in the first place (occasional
-upward fades can push the instantaneous transmittance back above the
-key-rate threshold even when the mean transmittance has already fallen
-below it, extending the true ergodic-rate max range slightly beyond the
-deterministic-only prediction). The guard has been removed; only a
-sigma_R^2 cap remains, applied solely to the *forced, uncorrected*
-log-normal/Gamma-Gamma curves as a genuine (not premature) numerical
-safety measure for pathologically large shape parameters.
+Numerical notes: no early cutoff is applied on eta_nominal, because the
+turbulence tail (upward fades) can keep the ergodic rate above threshold
+slightly beyond the deterministic max range. SIGMA_R2_CAP limits sigma_R^2
+for the forced (uncorrected) log-normal/Gamma-Gamma curves only.
 """
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -80,8 +65,7 @@ ALPHA_ATM = 0.046
 OUTAGE_SKR_THRESHOLD = 1e-9
 MC_N = 20_000
 MC_SEED = 0
-SIGMA_R2_CAP = float('inf')   # v2.3: legacy hard cutoff (300) removed; it zeroed the rate for strong Cn2 beyond ~30 km
-                              # and made 'Gamma-Gamma (forced)' look like a 30 km model. Gamma-Gamma now saturates correctly.
+SIGMA_R2_CAP = float('inf')   # no cap on sigma_R^2 (infinite)
 
 CN2_CLASSES = CAL.Cn2_classes
 
@@ -350,9 +334,9 @@ print(f"Figure saved to {fig_path} (+ .pdf)")
 # (the 4 cases: Deterministic, Log-Normal, Gamma-Gamma, Corrected
 # Gamma-Gamma), with the three Cn2 site conditions overlaid in each row
 # (Deterministic is Cn2-independent, so its row shows one curve; the
-# other three rows show weak/moderate/strong as separate lines so you
-# can see how the SAME model's prediction shifts with turbulence
-# strength, in both distance-domain and loss-domain).
+# other three rows show weak/moderate/strong as separate lines, giving
+# each model's dependence on turbulence strength in both the distance
+# and loss domains).
 # ---------------------------------------------------------------------
 loss_arr = np.array([loss_dB(e) for e in eta_nom_arr])   # shared x-mapping, Cn2-independent
 

@@ -25,9 +25,9 @@ def clip01(x):
 class RunningStats:
     """Welford's online algorithm for mean/variance without storing samples.
 
-    Used by the Monte Carlo engine's adaptive-stopping mode, where sample
-    counts can reach 5x10^5 and we don't want O(N) memory if only summary
-    statistics (mean, variance, standard error) are needed.
+    Used by the adaptive-stopping mode of the Monte Carlo engine, so that
+    memory is O(1) in the sample count (mean, variance and standard error
+    only).
     """
 
     def __init__(self):

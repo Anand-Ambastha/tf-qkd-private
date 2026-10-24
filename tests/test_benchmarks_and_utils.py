@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Benchmark harnesses (Monte Carlo sample-count sweep, quadrature-order
-sweep) execute cleanly and produce sane, monotonic-ish outputs; RunningStats
+sweep) execute cleanly and return finite, approximately monotonic outputs; RunningStats
 online algorithm matches numpy's batch mean/variance."""
 import numpy as np
 from src.monte_carlo import benchmark_monte_carlo, mc_expectation_adaptive

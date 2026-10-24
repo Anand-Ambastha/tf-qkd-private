@@ -1,10 +1,8 @@
 # API_REFERENCE.md
 
-Full parameter-level docstrings live in the source (every public
-function/class has a docstring with a physical/numerical explanation);
-this document is a navigable index by module, not a duplicate of that
-text. See docs/THEORY.md, GAMMA_GAMMA.md, CORRECTED_GAMMA_GAMMA.md for
-the underlying derivations.
+Parameter-level documentation is in the docstrings of the source. This
+document is an index of the public interface by module. See THEORY.md,
+GAMMA_GAMMA.md and CORRECTED_GAMMA_GAMMA.md for the underlying derivations.
 
 ## `src.turbulence` (package)
 
@@ -53,7 +51,7 @@ Module-level helpers: `aperture_averaging_factor(D, wavelength, L)`,
 ## `src.tfqkd_engine.TFQKDEngine(pd, thetaA, thetaB, Nmax=4)`
 | Method | Description |
 |---|---|
-| `instantaneous_key_rate(alpha, eta)` | R(alpha, eta), validated CAL formula, clipped >= 0 |
+| `instantaneous_key_rate(alpha, eta)` | R(alpha, eta), Curty-Azuma-Lo formula, clipped to >= 0 |
 | `optimize_alpha_at(eta)` | (alpha*, R*) at one fixed eta |
 | `ergodic_key_rate(channel, alpha, method=..., n_mc=..., rng=...)` | E_eta[R(alpha,eta)] |
 | `optimize_fixed_alpha(channel, ...)` | best single alpha for a channel |
@@ -99,7 +97,7 @@ Module-level helpers: `aperture_averaging_factor(D, wavelength, L)`,
 `DEFAULT_MC_SAMPLES=50000`, `MC_SAMPLE_GRID`, `EPS`.
 
 ## `src.legacy_baseline`
-The unmodified, validated Curty-Azuma-Lo TF-QKD + deterministic FSO +
-log-normal turbulence implementation this whole framework builds on top
-of. Not part of the new API surface — consult it directly only if you
-need to verify what a wrapped function does internally.
+The Curty-Azuma-Lo TF-QKD key-rate formula, the deterministic FSO link
+budget and the log-normal turbulence functions, on which the other modules
+build. The turbulence classes wrap these functions; they are not a separate
+public interface.
