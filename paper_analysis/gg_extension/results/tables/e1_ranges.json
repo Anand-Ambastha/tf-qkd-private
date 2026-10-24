@@ -1,0 +1,19 @@
+{
+ "det_tri": 248.82705688476562,
+ "det_repo": 252.03811645507812,
+ "GG_csi_repo_weak": 291.7231750488281,
+ "GG_csi_tri_weak": 288.7095642089844,
+ "GG_nocsi_tri_weak": 243.12973022460938,
+ "LN_csi_repo_weak": 317.6020812988281,
+ "LN_csi_tri_weak": 314.5402526855469,
+ "GG_csi_repo_moderate": 293.2292175292969,
+ "GG_csi_tri_moderate": 290.3150939941406,
+ "GG_nocsi_tri_moderate": 240.53878784179688,
+ "LN_csi_repo_moderate": 132.72689819335938,
+ "LN_csi_tri_moderate": 132.63595581054688,
+ "GG_csi_repo_strong": 291.7247009277344,
+ "GG_csi_tri_strong": 288.7791442871094,
+ "GG_nocsi_tri_strong": 240.93551635742188,
+ "LN_csi_repo_strong": 13.081207275390625,
+ "LN_csi_tri_strong": 13.076019287109375
+}
