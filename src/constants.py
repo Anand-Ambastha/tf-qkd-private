@@ -13,17 +13,15 @@ References
 """
 
 # Rytov-variance regime boundaries used by the AUTO model selector
-# (Andrews & Phillips, Ch. 9 - these are the conventional weak / moderate /
-# saturation boundaries quoted throughout the FSO literature; the "strong"
-# boundary sigma_R^2 ~ 25 marks the approach to saturation where the
-# Gamma-Gamma model itself starts to need the corrected/aperture-averaged
-# treatment to remain accurate for a finite receiver).
+# (Andrews & Phillips, Ch. 9): conventional weak / moderate / strong
+# boundaries. Near sigma_R^2 ~ 25 the channel approaches saturation, where
+# the corrected (aperture-averaged) Gamma-Gamma model is preferred for a
+# finite receiver.
 SIGMA_R2_WEAK_MODERATE = 1.0
 SIGMA_R2_MODERATE_STRONG = 10.0
 
-# Default TF-QKD security-proof parameters (Curty-Azuma-Lo), matched to the
-# validated baseline in src/legacy_baseline.py so results are directly
-# comparable.
+# Default TF-QKD security-proof parameters (Curty-Azuma-Lo), identical to
+# those used in src/legacy_baseline.py.
 import numpy as np
 
 DEFAULT_TFQKD_PARAMS = dict(

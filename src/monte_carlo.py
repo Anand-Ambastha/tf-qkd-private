@@ -2,7 +2,7 @@
 """
 monte_carlo.py
 ==============
-Monte Carlo expectation engine used by all turbulence channels' MC path.
+Monte Carlo expectation of a function of the channel transmittance.
 Supports fixed-sample-count runs and an adaptive mode that keeps drawing
 batches until the standard error of the mean drops below a target
 tolerance (or a sample cap is hit), plus a benchmark harness that sweeps

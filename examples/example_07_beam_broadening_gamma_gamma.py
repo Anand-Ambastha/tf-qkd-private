@@ -2,14 +2,14 @@
 """
 example_07_beam_broadening_gamma_gamma.py
 =========================================
-New model 'gamma_gamma_bb': per-arm Gamma-Gamma fading PLUS per-arm turbulence-induced
+Model 'gamma_gamma_bb': per-arm Gamma-Gamma fading PLUS per-arm turbulence-induced
 long-term beam broadening (src/turbulence/beam_broadening.py).
 
 Compared for weak / moderate / strong Cn2:
     Deterministic                      (free-space diffraction + atmosphere only)
     Deterministic + beam broadening    (broadening only, no fading)   -> isolates the BB effect
-    Gamma-Gamma (per arm)              (fading only, v2.2.0 result)
-    Gamma-Gamma + BB (per arm)         (NEW: both effects)
+    Gamma-Gamma (per arm)              (fading only)
+    Gamma-Gamma + BB (per arm)         (both effects)
 Max range = largest total Alice-Bob distance with ergodic SKR > 1e-9 bits/pulse.
 
 Run: python3 examples/example_07_beam_broadening_gamma_gamma.py   (QUICK=1 for a smoke run)
@@ -113,7 +113,7 @@ for c, cn2 in CN2.items():
         MAXR[c][k] = max_range(R[c][k], k, cn2)
     print(f"  {c}: " + ", ".join(f"{k}={MAXR[c][k]:.1f}" if MAXR[c][k] else f"{k}=none" for k in KEYS))
 
-# ---- validation of the new model at its max range: MC + quadrature convergence
+# ---- validation of the gamma_gamma_bb model at its max range: MC + quadrature convergence
 print("Validation at GG+BB max range ...")
 VAL = []
 for c, cn2 in CN2.items():

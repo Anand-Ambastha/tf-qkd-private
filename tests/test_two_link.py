@@ -45,7 +45,7 @@ def test_arm_variance_is_evaluated_at_half_length():
     p = CAL.two_link_lognormal_params(1e-15, LAM, L / 2, L / 2)
     full = float(CAL.rytov_variance(1e-15, LAM, L))
     assert p['sigma_R2_A'] == pytest.approx(full * 2 ** (-11 / 6), rel=1e-12)
-    # total log-variance = 2^(-5/6) * single-factor value, i.e. the old model overstated it ~1.78x
+    # total log-variance = 2^(-5/6) * single-factor value, i.e. the single-factor model overstates it ~1.78x
     assert p['s2_total'] == pytest.approx(full * 2 ** (-5 / 6), rel=1e-12)
 
 
@@ -87,8 +87,8 @@ def test_quadrature_matches_monte_carlo(eta0, Cn2, L):
 
 
 def test_two_link_differs_from_old_single_factor():
-    """Regression guard: the corrected model must NOT coincide with the old one
-    (old: one factor with sigma_R^2 at full L, i.e. ~1.78x too much log-variance)."""
+    """The two-link model differs from the single-factor model, which applies
+    sigma_R^2 at full L and has ~1.78x the log-variance."""
     eta0, Cn2, L = 0.05, 1e-15, 6e3
     new = create_channel('lognormal', eta_nominal=eta0, Cn2=Cn2, wavelength=LAM, distance_m=L)
     old = create_channel('lognormal', eta_nominal=eta0, Cn2=Cn2, wavelength=LAM, distance_m=L,

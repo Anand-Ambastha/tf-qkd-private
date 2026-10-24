@@ -25,31 +25,25 @@ factor,
     alpha_eff = alpha / A,   beta_eff = beta / A
 
 which gives Var_eff = A(1/alpha + 1/beta) + A^2/(alpha beta) ~= A * Var0
-to leading order (the cross term is normally sub-dominant). An earlier
-implementation attempt held beta fixed and solved for alpha_eff from the
-exact variance identity; this is numerically fragile — for aggressive
-aperture averaging (small A), the target variance can fall below beta's
-own contribution alone, forcing alpha_eff negative and requiring an ad
-hoc clip. The symmetric 1/A rescaling used in the shipped code has no
-such failure mode (alpha_eff, beta_eff stay positive for every A in
-(0,1]) and was adopted for that reason during development and validation
-(see docs/VALIDATION.md).
+to leading order (the cross term is normally sub-dominant). Holding beta
+fixed and solving for alpha_eff from the exact variance identity is not
+used: for small A the target variance can fall below beta's own
+contribution, which would require alpha_eff < 0. The symmetric 1/A
+rescaling keeps alpha_eff and beta_eff positive for every A in (0, 1].
 
 ## 2. Beam wander
 
 Large-scale eddies (larger than the beam diameter) displace the
-instantaneous beam centroid randomly about its mean position — "beam
-wander" — which is a *long-term* beam-broadening / additional-jitter
-effect distinct from (and in addition to) scintillation. It's modeled
-here as an additional contribution to the effective pointing-jitter
-standard deviation:
+instantaneous beam centroid randomly about its mean position ("beam
+wander"). This acts in addition to scintillation. It is modeled as an
+additional contribution to the effective pointing-jitter standard
+deviation:
 
     sigma_s_total = sqrt(jitter_std^2 + beam_wander_std^2)
 
-fed into the pointing-error model of Section 3. This combines mechanical
-pointing jitter and beam-wander-induced centroid displacement into one
-effective misalignment budget, consistent with how both are commonly
-treated together in the link-budget literature ([AP] Ch. 12).
+fed into the pointing-error model of Section 3. Mechanical pointing jitter
+and beam-wander displacement are thus combined into one effective
+misalignment standard deviation, assuming the two are independent.
 
 ## 3. Pointing errors: Farid & Hranilovic (2007) model
 
@@ -77,13 +71,10 @@ reference "no impairment" transmittance.
 
 The total normalized fading factor is F = I_turbulence * (h_p / E[h_p]),
 the product of an aperture-averaged Gamma-Gamma random variable and an
-independent power-law random variable. No simple closed form exists for
-the PDF of this product in general (a Meijer-G representation exists in
-the specialized FSO literature but is numerically delicate to evaluate
-robustly across parameter regimes). Rather than adopt an approximation
-that would need its own separate validation, `CorrectedGammaGammaChannel`
-builds F's distribution *empirically*, from a large (default 200,000)
-cached Monte Carlo sample generated once at construction:
+independent power-law random variable. No simple closed form for the PDF
+of this product is used here. `CorrectedGammaGammaChannel` instead builds
+the distribution of F empirically, from a cached Monte Carlo sample
+(default 200,000 draws) generated once at construction:
 
   - `pdf(eta)`: linear interpolation of a 200-bin histogram density.
   - `cdf(eta)`: linear interpolation of the empirical (sorted-sample)
@@ -91,30 +82,25 @@ cached Monte Carlo sample generated once at construction:
   - `sample(n)`: still exact, independent generative sampling (not drawn
     from the cache) — only pdf/cdf are cache-based.
 
-This is explicitly a numerical, not analytic, representation, and is
-documented at the point of use in the source rather than silently
-presented as a closed form. It is validated the same way as every other
-model: PDF integrates to 1 (`tests/test_distributions.py`), and
-Monte-Carlo/quadrature expectations of the TF-QKD key rate agree to
-<0.1% at the operating points checked in `tests/test_mc_vs_quadrature.py`.
+This is a numerical, not analytic, representation. The PDF integral and
+the agreement of Monte Carlo and quadrature expectations of the key rate
+are checked in `tests/test_distributions.py` and
+`tests/test_mc_vs_quadrature.py` (see VALIDATION.md; agreement is below
+0.1% at the operating points listed there).
 
-## 5. Inner scale / outer scale (documented approximation, not full spectrum)
+## 5. Inner scale / outer scale (approximation, not full spectrum)
 
 `inner_scale` (l0) and `outer_scale` (L0) are accepted as optional
 constructor parameters. A rigorous treatment replaces the Kolmogorov
 spectrum with the Tatarskii (inner-scale) or von Karman (outer-scale)
-spectrum inside the Rytov-variance integral (see docs/THEORY.md, Section
-1) — a substantial standalone derivation. Here, instead, they apply a
-first-order multiplicative heuristic correction directly to sigma_R^2
-(`_inner_outer_scale_correction`): finite inner scale slightly increases
-scintillation (more high-wavenumber power retained, +10% cap as l0->0,
-negligible for l0 above a few mm), and finite outer scale slightly
-decreases it (removes some large-eddy/low-wavenumber power, -5% cap,
-negligible for L0 above tens of meters). This is flagged in the source
-as a simplification and is not claimed to reproduce the literature's
-modified-spectrum results quantitatively — it exists so the parameter
-plumbing is in place for a future, more rigorous implementation, rather
-than being silently ignored.
+spectrum inside the Rytov-variance integral (see THEORY.md, Section 1).
+This implementation instead applies a first-order multiplicative heuristic
+correction directly to sigma_R^2 (`_inner_outer_scale_correction`): finite
+inner scale increases scintillation (up to +10% as l0 -> 0, negligible for
+l0 above a few mm), and finite outer scale decreases it (up to -5% as
+L0 -> 0, negligible for L0 above tens of meters). The correction is a
+simplification and does not reproduce modified-spectrum results from the
+literature quantitatively.
 
 ## 6. Reduction to plain Gamma-Gamma
 
@@ -122,7 +108,7 @@ With `enable_aperture_averaging=False`, `enable_pointing_error=False`,
 `inner_scale=None`, `outer_scale=None` (the defaults for the latter two),
 `CorrectedGammaGammaChannel` computes exactly the same (alpha, beta) as
 `GammaGammaChannel` at the same (Cn2, wavelength, distance_m, wave_type),
-and h_p degenerates to the constant 1 — verified in
+and h_p degenerates to the constant 1. This is tested in
 `tests/test_corrected_gamma_gamma_reduces.py`.
 
 ## References

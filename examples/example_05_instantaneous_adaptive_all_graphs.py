@@ -3,10 +3,9 @@
 example_05_instantaneous_adaptive_all_graphs.py
 ==================================================
 Five graphs, each with two parts (a: SKR vs Distance, b: SKR vs Loss in
-dB), ALL computed under INSTANTANEOUS ADAPTIVE reference-intensity alpha
--- i.e. alpha is re-optimized for every individual channel realization,
-alpha_i* = argmax_alpha R(alpha, eta_i), not a single fixed alpha=0.20 as
-in earlier examples.
+dB), all computed under instantaneous adaptive reference-intensity alpha:
+alpha is re-optimized for every channel realization,
+alpha_i* = argmax_alpha R(alpha, eta_i), rather than fixed at alpha=0.20.
 
   Graph 1: Log-Normal, forced "throughout" at weak / moderate / strong
            Cn2 (three curves), with each curve's own validity segment
@@ -16,31 +15,25 @@ in earlier examples.
   Graph 3: Corrected Gamma-Gamma ("Gamma-Gamma Extended"), same
            treatment, valid segment (sigma_R^2 >= 10) solid.
   Graph 4: AUTO mode, one curve per Cn2 class (weak/moderate/strong),
-           each stitched from the appropriate segments of Graphs 1-3 at
-           that same Cn2 (no extra computation needed -- AUTO's job IS
-           exactly "use the valid model at each distance").
+           each stitched from the valid segments of Graphs 1-3 at
+           the same Cn2 (the valid model at each distance; no
+           additional computation).
   Graph 5: Deterministic (no turbulence, Cn2-independent), single curve.
 
-On the exact numerical meaning of "instantaneous adaptive alpha" here
-------------------------------------------------------------------------
-legacy_baseline.key_rate (and therefore optimize_alpha) requires alpha to
-be a SCALAR -- the cat-state coefficient tables it builds internally are
-not vectorizable over alpha (confirmed: calling key_rate with an array
-alpha raises "truth value of an array is ambiguous"). True per-sample
-optimization (one scipy.optimize call per Monte Carlo draw) would need
-tens of thousands of scipy calls per (model, Cn2, distance) point --
-computationally impractical at the scope of this sweep.
+Numerical method for instantaneous adaptive alpha
+-------------------------------------------------
+legacy_baseline.key_rate (and optimize_alpha) requires a scalar alpha, since
+its cat-state coefficient tables are not vectorized over alpha. Per-sample
+optimization would need one scipy.optimize call per Monte Carlo draw, which
+is impractical for this sweep.
 
-Instead, alpha*(eta) is precomputed ONCE on a fine log-spaced grid of eta
-(200 bins spanning 1e-16 to 1.0) via the real optimizer
-(TFQKDEngine.optimize_alpha_at), and every Monte Carlo sample is assigned
-the optimal alpha of its nearest bin. Since alpha*(eta) is a smooth,
-slowly-varying function of eta (see the printed lookup-table sanity
-check at the top of the run), a 200-bin piecewise-constant approximation
-is very close to the true continuous optimum while being ~1000x cheaper
-than per-sample optimization; key_rate is then evaluated once per
-*populated bin* (vectorized over all samples in that bin), not once per
-sample.
+Instead, alpha*(eta) is precomputed once on a log-spaced grid of eta (200
+bins spanning 1e-16 to 1.0) with TFQKDEngine.optimize_alpha_at, and each
+Monte Carlo sample is assigned the optimal alpha of its nearest bin.
+alpha*(eta) is smooth and slowly varying (see the lookup-table check printed
+at the start of the run), so the piecewise-constant approximation is close to
+the continuous optimum and about 1000x cheaper. key_rate is evaluated once
+per populated bin, vectorized over the samples in that bin.
 
 Run: python3 examples/example_05_instantaneous_adaptive_all_graphs.py
 """
@@ -82,8 +75,8 @@ CN2_CLASSES = CAL.Cn2_classes   # {'weak': 1e-17, 'moderate': 1e-15, 'strong': 1
 engine = TFQKDEngine(PD, THETA_A, THETA_B, Nmax=NMAX)
 
 # ---------------------------------------------------------------------
-# Global alpha*(eta) lookup table (built ONCE; reused for every model,
-# Cn2 class, and distance below -- see module docstring)
+# Global alpha*(eta) lookup table (built once; reused for every model,
+# Cn2 class, and distance below; see module docstring)
 # ---------------------------------------------------------------------
 print("Building global alpha*(eta) lookup table (200 bins, one-time cost)...")
 N_BINS = 200
@@ -112,8 +105,8 @@ def instantaneous_adaptive_rate(eta_samples):
 
 
 def instantaneous_adaptive_rate_deterministic(eta0):
-    """Single-point version (no sampling needed): the true optimizer,
-    not the binned approximation, since there's only one eta to solve for."""
+    """Single-point version: uses the optimizer directly rather than the
+    binned approximation, since there is a single eta."""
     _, R = engine.optimize_alpha_at(eta0)
     return max(R, 0.0)
 

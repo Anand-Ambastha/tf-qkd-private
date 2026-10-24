@@ -50,10 +50,9 @@ def test_zero_fading_eta_equals_one(engine):
 
 
 def test_gamma_gamma_large_alpha_beta_no_overflow():
-    """Large, strongly asymmetric (alpha, beta) -- the regime that
-    originally overflowed scipy.special.kv during development -- must
-    still produce a finite, correctly normalized PDF (mpmath fallback
-    path, see turbulence/gamma_gamma.py::_log_kv)."""
+    """Large, strongly asymmetric (alpha, beta) must still give a finite,
+    correctly normalized PDF (mpmath fallback for scipy.special.kv overflow,
+    see turbulence/gamma_gamma.py::_log_kv)."""
     from src.turbulence.gamma_gamma import gamma_gamma_pdf
     I = np.array([1e-6, 1e-3, 0.1, 1.0, 5.0, 20.0])
     vals = gamma_gamma_pdf(I, alpha=500.0, beta=8.0)
@@ -62,8 +61,8 @@ def test_gamma_gamma_large_alpha_beta_no_overflow():
 
 
 def test_scintillation_index_extreme_sigma():
-    """Very small and very large Rytov variance shouldn't produce
-    negative or non-finite alpha/beta."""
+    """Very small and very large Rytov variance give positive, finite
+    alpha/beta."""
     from src.turbulence.gamma_gamma import alpha_beta_plane_wave
     for s in [1e-6, 0.5, 5.0, 50.0]:
         a, b = alpha_beta_plane_wave(s)

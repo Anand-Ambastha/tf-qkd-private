@@ -1,6 +1,6 @@
-# Turbulence-induced beam broadening (v2.3.0)
+# Turbulence-induced beam broadening
 
-## 1. Why a separate model
+## 1. Motivation
 
 Gamma-Gamma and Log-Normal describe how the received irradiance fluctuates around its mean. They keep that
 mean at the free-space value, so scintillation moves power around but never removes any. Real turbulence also
@@ -19,8 +19,8 @@ For a collimated Gaussian beam over a horizontal path of length z (Andrews and P
 - k = 2 pi / lambda.
 - sigma_R^2 is the plane-wave Rytov variance of the arm (`legacy_baseline.rytov_variance`), the same number the
   Gamma-Gamma model uses.
-- sigma_R^(12/5) means (sigma_R^2)^(6/5), the Rytov standard deviation to the 12/5 power. This is the same
-  convention as the Gamma-Gamma alpha and beta (see GAMMA_GAMMA.md).
+- sigma_R^(12/5) denotes (sigma_R^2)^(6/5), the same convention as in the Gamma-Gamma alpha and beta (see
+  GAMMA_GAMMA.md).
 
 With Cn2 = 0 the correction vanishes and W_LT = W. It grows with both Cn2 and path length.
 
@@ -55,23 +55,23 @@ They need `w0` and `receiver_radius`, and they only work per arm (`two_link=True
 
 ## 6. What it does to the range
 
-Broadening is a loss on the mean, so the maximum range falls as Cn2 rises. Plain Gamma-Gamma behaves
-differently: its range saturates and is nearly the same for every Cn2. In `BEAM_BROADENING_REPORT.txt` the
+Broadening is a loss on the mean, so the maximum range falls as Cn2 rises. Without broadening, the
+Gamma-Gamma range is nearly independent of Cn2. In `BEAM_BROADENING_REPORT.txt` the
 ranges are 287.9, 198.6 and 81.9 km for weak, moderate and strong turbulence with broadening, against 291.7,
 293.2 and 291.7 km without it.
 
 ## 7. Assumptions and limits
 
-Please state these when you quote results.
+These should be stated when results are quoted.
 
-1. W_LT already contains beam wander, so don't also add pointing jitter (`jitter_std`) in the same run. That
-   would count the same effect twice.
+1. W_LT already contains beam wander, so pointing jitter (`jitter_std`) should not be added in the same run;
+   doing so would count the same effect twice.
 2. This is a first-order correction. The Gamma-Gamma alpha and beta stay at their plane-wave values, and the
    scintillation of the broadened beam is not derived again.
 3. The 1.63 sigma_R^(12/5) Lambda form comes from weak-to-moderate turbulence. For sigma_R^2 well above 1 it
-   keeps growing instead of saturating, so the strong-Cn2 broadening (W_LT of tens of metres) is probably
-   overestimated and the strong-Cn2 range is a lower bound. Plain Gamma-Gamma without broadening is the
-   matching upper bound.
+   keeps growing instead of saturating, so the strong-Cn2 broadening (W_LT of about 16 m at the strong-Cn2 maximum range) is likely
+   overestimated and the strong-Cn2 range is likely a lower bound. Gamma-Gamma without broadening gives the
+   corresponding upper bound.
 4. The path is horizontal, Cn2 is constant, and the transmitter is a collimated Gaussian beam.
 
 ## Reference

@@ -29,27 +29,23 @@ from numpy.polynomial.laguerre import laggauss
 def quad_expectation(pdf, func, a, b, epsabs=1e-10, epsrel=1e-8, limit=200, points=None):
     """E[func(eta)] via adaptive scipy quadrature, integrating pdf(eta)*func(eta).
 
-    Pitfall this guards against: fading-channel PDFs (Gamma-Gamma
-    especially) can be a very narrow spike relative to the full physical
-    support [0, eta_max=1] -- e.g. std/mean ~ 0.1-0.3 around a mean that
-    may itself be << 1 (large link loss). Plain adaptive quad's initial
-    coarse Gauss-Kronrod pass over the *whole* interval can step right
-    over that spike and report a small, misleadingly confident error
-    estimate while being wrong by O(1) (verified against Monte Carlo
-    during development of this module -- see docs/VALIDATION.md). The
-    fix is to hand quad explicit interior `points` breakpoints so it is
-    forced to subdivide around the region where the density actually
-    lives, rather than relying on it to discover that region unaided.
+    Fading-channel PDFs (Gamma-Gamma in particular) can be narrow relative
+    to the physical support [0, eta_max=1], e.g. std/mean ~ 0.1-0.3 around
+    a mean much smaller than 1 at large link loss. The initial coarse
+    Gauss-Kronrod pass of an adaptive rule over the whole interval can miss
+    such a peak and return a small error estimate for an incorrect value.
+    Explicit interior `points` breakpoints are therefore passed to quad so
+    that it subdivides around the region where the density is supported.
+    See docs/VALIDATION.md for the comparison against Monte Carlo.
     """
     integrand = lambda x: float(np.asarray(pdf(x)).reshape(-1)[0] * np.asarray(func(np.array([x]))).reshape(-1)[0])
     pts = None
     if points is not None:
         pts = sorted({float(p) for p in points if a < float(p) < b})
         pts = pts or None
-    # See validation.check_pdf_normalization for why this warning can be
-    # benign (piecewise-linear histogram-based pdfs, e.g. the corrected
-    # Gamma-Gamma model): suppressed here rather than left to alarm callers,
-    # since accuracy is independently checked wherever this matters.
+    # The subdivision-limit warning is expected for piecewise-linear
+    # histogram-based pdfs (e.g. the corrected Gamma-Gamma model); see
+    # validation.check_pdf_normalization. It is suppressed here.
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', category=IntegrationWarning)
         val, _ = quad(integrand, a, b, epsabs=epsabs, epsrel=epsrel, limit=limit, points=pts)

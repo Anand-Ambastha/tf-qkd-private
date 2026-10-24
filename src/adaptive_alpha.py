@@ -3,7 +3,7 @@
 adaptive_alpha.py
 ==================
 Reference-intensity (alpha) optimization for TF-QKD over a fading
-channel, at three levels documented in the project:
+channel, at three levels:
 
   fixed        : a single alpha, chosen once, used for every realization.
   optimized    : a single alpha chosen to maximize the *ergodic*
@@ -13,9 +13,7 @@ channel, at three levels documented in the project:
                  to know the instantaneous channel state -- an idealized
                  upper bound on adaptive-alpha gain).
 
-All three call the unchanged, validated `optimize_alpha` /
-`key_rate` from legacy_baseline.py; nothing about the TF-QKD security
-proof is touched here.
+All three use `optimize_alpha` and `key_rate` from legacy_baseline.py.
 """
 from __future__ import annotations
 
@@ -51,10 +49,8 @@ def instantaneous_adaptive_alpha(eta_samples, pd, thetaA, thetaB, Nmax=4,
     """For every realization eta_i, solve alpha_i* = argmax_alpha R(alpha, eta_i).
     Also evaluates the fixed-alpha key rate at the same realizations for
     a like-for-like comparison. Returns a dict of arrays plus summary
-    statistics and the alpha*-vs-eta correlation, matching the analysis
-    already produced by instantaneous_adaptive_alpha.py / plot_adaptive_alpha.py
-    in the original repository (kept here so the new framework can drive
-    it for *any* turbulence model, not just log-normal).
+    statistics and the alpha*-vs-eta correlation. Works for any turbulence
+    channel model.
     """
     eta_samples = np.asarray(eta_samples, dtype=np.float64)
     n = len(eta_samples)
