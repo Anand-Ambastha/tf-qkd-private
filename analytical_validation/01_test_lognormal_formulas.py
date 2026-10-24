@@ -269,7 +269,7 @@ for key, pap in P.APP_NAIVE.items():
     rows.append([key, f'{s:.3f}', f'{v:+.3f}', f'{pap:+}'])
 C.save_csv('lognormal_T5_naive_claims.csv', ['case', 'sigma_X2', 'naive error % (this test)', 'Appendix H %'], rows)
 chk.add('T5-naive-0.007', 'Appendix H: naive error -0.001 % at sigma_X^2=0.007', abs(nv['sigma_X2=0.007 (L=20)'][0] + 0.001), 0.003, unit='abs. diff, pp')
-chk.add('T5-naive-0.31', 'Appendix H: naive error 0.18 % at sigma_X^2=0.31', abs(nv['sigma_X2=0.31 (L=160)'][0] - 0.18), 0.01, unit='abs. diff, pp')
+chk.add('T5-naive-0.31', 'Appendix H: naive error 0.20 % at sigma_X^2=0.31 (0.18 before the residual_j fix)', abs(nv['sigma_X2=0.31 (L=160)'][0] - P.APP_NAIVE['sigma_X2=0.31 (L=160)']), 0.01, unit='abs. diff, pp')
 chk.info('T5-naive-140', 'Appendix H: naive error "29 %" at Cn2=1e-16, L=140', f'this test: {nv["Cn2=1e-16,L=140"][0]:+.1f} % at sigma_X^2 = {nv["Cn2=1e-16,L=140"][1]:.2f}: the 29 % is reproduced, but the printed sigma_X^2 = 9.6 should read 2.4.')
 chk.info('T5-naive-total', 'Appendix H: naive expansion in eta_A*eta_B errs -20.1 % at L=160', f'this test: {nv["total-eta,L=160"][0]:+.1f} %')
 
