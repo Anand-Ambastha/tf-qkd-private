@@ -17,7 +17,7 @@ Run from the repo root with `sh paper_analysis/gg_extension/run_all.sh`. Outputs
 
 - CSI: the key rate is evaluated per realisation and averaged, E[R(eta)]. This is what `src/` computes.
 - No CSI: the key rate is built from fading-averaged gains and yields only.
-- Residual: `src/legacy_baseline.residual_j` sums over a square set of photon numbers, while the sum over S_j is triangular. Here the residual is taken over the complement of S_j. Columns and keys named `repo` use the original residual and reproduce the published numbers.
+- Residual: before v2.4.1, `src/legacy_baseline.residual_j` subtracted a square set of photon numbers while the sum over S_j is triangular; it is fixed in `src`. Columns and keys named `repo` use the old residual (`legacy_residual` in `tfqkd_ext.py`) and reproduce the previously published numbers.
 - Beam broadening is the long-term beam of `src/turbulence/beam_broadening.py`, which already includes wander. Pointing jitter is not modelled.
 - Analytic derivatives are 5-point finite differences in ln(eta), step 0.1.
 - Range is the largest distance with R > 1e-9 bit/pulse. Range searches use 150 quadrature nodes per arm, accurate to about 1% near cutoff.

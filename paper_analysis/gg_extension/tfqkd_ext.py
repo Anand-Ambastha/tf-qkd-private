@@ -23,6 +23,12 @@ S_CAL7 = {0:[(0,0),(0,2),(2,0),(2,2)], 1:[(1,1),(1,3),(3,1)]}
 def yield_exact(nA,nB,eta):
     return np.maximum(CAL.p_zz_photon(nA,nB,TA,TB,eta,PD),0.0)
 
+def legacy_residual(j, alpha, Nmax):
+    """Delta_j as computed before v2.4.1 (square set); kept so the *_repo columns stay reproducible."""
+    c = cvec(j, alpha, 79); m = (Nmax - j) // 2
+    inner = float(np.sum(c[:m + 1])) if m >= 0 else 0.0
+    return max(float(np.sum(c)) ** 2 - inner ** 2, 0.0)
+
 def eZ_num(alpha, eta, sets, yfun, mode):
     """sum_j (sum_{S_j} c c sqrt(yield) + Delta_j)^2 ; yfun(nA,nB,eta)->array"""
     eta=np.atleast_1d(eta).astype(float); tot=np.zeros_like(eta)
@@ -30,7 +36,7 @@ def eZ_num(alpha, eta, sets, yfun, mode):
         c=cvec(j,alpha,79); S=np.zeros_like(eta)
         for nA,nB in sets[j]:
             S+=c[(nA-j)//2]*c[(nB-j)//2]*np.sqrt(np.maximum(yfun(nA,nB,eta),0.0))
-        if mode=='repo': D=CAL.residual_j(j,alpha,4)
+        if mode=='repo': D=legacy_residual(j,alpha,4)
         else: D=delta_for_set(j,alpha,sets[j])
         tot+=(S+D)**2
     return tot
