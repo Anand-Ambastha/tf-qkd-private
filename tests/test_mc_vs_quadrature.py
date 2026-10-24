@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Monte Carlo and quadrature must agree (within MC noise) on the ergodic
-TF-QKD key rate, for every turbulence model. This is the central
-cross-validation the task spec calls for."""
+TF-QKD key rate, for every turbulence model."""
 import numpy as np
 from src.validation import compare_mc_vs_quadrature
 

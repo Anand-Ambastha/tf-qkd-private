@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """With aperture averaging and pointing error both disabled, the corrected
 Gamma-Gamma model must reduce exactly to the plain Gamma-Gamma model with
-the same alpha, beta -- this is an explicit requirement in the task
-spec, not just a nice-to-have."""
+the same alpha, beta."""
 import numpy as np
 from src.turbulence import GammaGammaChannel, CorrectedGammaGammaChannel
 

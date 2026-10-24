@@ -2,10 +2,9 @@
 """
 plotting.py
 ===========
-Centralized, journal-consistent plotting for every turbulence model and
-TF-QKD result. Every figure is saved as both .png (raster, presentation)
-and .pdf (vector, publication-ready). Style is set once in `_style()` so
-all figures share fonts, DPI, and grid conventions.
+Plotting routines for turbulence models and TF-QKD results. Every figure
+is saved as both .png (raster) and .pdf (vector). Style is set once in
+`_style()` so all figures share fonts, DPI, and grid conventions.
 """
 from __future__ import annotations
 
@@ -33,9 +32,8 @@ def _save(fig, out_dir, name):
 
 
 def _display_range(channel, n_points):
-    # fading can push eta above eta_nominal; show a window that comfortably
-    # covers the bulk of the distribution without wasting resolution on the
-    # (very long, very thin) physical tail out to eta_max=1.
+    # Fading can push eta above eta_nominal; the plotted window covers the
+    # bulk of the distribution and omits the thin tail out to eta_max = 1.
     hi = min(channel.eta_max, 8.0 * channel.eta_nominal)
     return np.linspace(1e-9, hi, n_points)
 

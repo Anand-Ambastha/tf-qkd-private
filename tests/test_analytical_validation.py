@@ -20,7 +20,7 @@ def test_analytic_derivatives_match_high_precision_reference():
 def test_printed_pxx_bracket_is_not_the_engine_value():
     eta = C.eta0_eff(80)
     assert abs(D.pxx_derivs(eta)[0] - C.pxx_ref(eta)) / C.pxx_ref(eta) < 1e-9
-    assert D.pxx_derivs(eta, printed_form=True)[0] > 0.1          # Eq.(6) as printed is wrong by orders of magnitude
+    assert D.pxx_derivs(eta, printed_form=True)[0] > 0.1          # Eq.(6) as printed differs from the engine value by orders of magnitude
 
 
 def test_lognormal_formula_reproduces_table_vi_at_160km():

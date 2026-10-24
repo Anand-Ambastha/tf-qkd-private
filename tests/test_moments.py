@@ -27,15 +27,15 @@ def test_gamma_gamma_variance_formula():
 
 def test_lognormal_energy_neutral(lognormal_channel):
     """E[eta] should equal eta_nominal (turbulence redistributes energy,
-    doesn't create or destroy it on average)."""
+    does not create or destroy it on average)."""
     s = lognormal_channel.sample(300_000)
     assert abs(np.mean(s) - lognormal_channel.eta_nominal) / lognormal_channel.eta_nominal < 0.02
 
 
 def test_gamma_gamma_alpha_beta_match_andrews_phillips():
-    """Regression for the sigma_R^(12/5) exponent (v2.2.0). Reference SI values
-    are the well-known Gamma-Gamma behaviour: SI = Rytov variance-ish for weak
-    turbulence, peaks ~1.2-1.3 near sigma_R^2 ~ 10, then saturates toward 1."""
+    """Checks the sigma_R^(12/5) exponent in alpha, beta. Reference scintillation
+    index (SI): approximately the Rytov variance for weak turbulence, peaking at
+    ~1.2-1.3 near sigma_R^2 ~ 10, then saturating toward 1."""
     import numpy as np
     from src.turbulence.gamma_gamma import alpha_beta_plane_wave
 

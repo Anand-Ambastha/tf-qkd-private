@@ -6,7 +6,7 @@ Gamma-Gamma turbulence applied INDEPENDENTLY ON EACH ARM (Alice->Charlie and
 Bob->Charlie, each of length L/2, each with its own Rytov variance and its own
 (alpha, beta)), validated against the per-arm Log-Normal model.
 
-Validation question answered here
+Validation question
 ---------------------------------
 For the WEAK / MODERATE / STRONG Cn2 classes (1e-17 / 1e-15 / 1e-13 m^(-2/3)):
 what is the maximum total Alice-Bob distance (ergodic SKR > outage threshold) under

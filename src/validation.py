@@ -25,14 +25,11 @@ def check_pdf_normalization(channel, a=0.0, b=None, atol=1e-3):
     b = channel.eta_max if b is None else b
     pts = sorted({p for p in (0.3 * channel.eta_nominal, channel.eta_nominal,
                                3.0 * channel.eta_nominal) if a < p < b}) or None
-    # CorrectedGammaGammaChannel's pdf is a piecewise-linear interpolation
-    # of a 200-bin histogram (see corrected_gamma_gamma.py docstring: no
-    # closed form exists for h_turbulence * h_pointing_error), so it has
-    # ~200 kinks; scipy.integrate.quad's adaptive subdivision can hit its
-    # iteration cap on such a non-smooth integrand while still converging
-    # to the correct integral (verified against the atol check below and
-    # against Monte Carlo in tests/test_mc_vs_quadrature.py) -- this
-    # warning is benign for that specific model and is suppressed here.
+    # The CorrectedGammaGammaChannel pdf is a piecewise-linear interpolation
+    # of a 200-bin histogram (no closed form exists for h_turbulence *
+    # h_pointing_error), so it has ~200 kinks. scipy.integrate.quad may reach
+    # its subdivision limit on such an integrand and emit a warning; the
+    # warning is suppressed here for that reason.
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', category=IntegrationWarning)
         val, _ = quad(lambda x: float(np.atleast_1d(channel.pdf(np.array([x])))[0]),
